@@ -31,7 +31,7 @@ Le plus simple : donne à Claude Code le lien vers `INSTALLER.md` et dis-lui « 
 
 Voir la fin de `distribution/INSTALLER.md`.
 
-## État de cette version (1.2)
+## État de cette version (1.3)
 
 L'extension est signée (Developer ID) et vérifiée par Apple : Safari la charge normalement.
 

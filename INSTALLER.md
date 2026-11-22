@@ -17,11 +17,11 @@ Il faut macOS 14 ou plus, `claude` et `swiftc`. S'il manque `swiftc`, demande à
 
 ## 2. Télécharger et vérifier l'archive
 
-Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.2/ai-for-safari-1.2.zip`
-Empreinte attendue (SHA-256) : `f9cf14b5d824cfdf901e274e5d42ca65aef316ac6d450780bff64d7fd8b7d750`
+Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.3/ai-for-safari-1.3.zip`
+Empreinte attendue (SHA-256) : `a3c707cbf1a903257c9afa46fedb2eda734c2ef90c0cac5299c535386a63292f`
 
 ```bash
-mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.2/ai-for-safari-1.2.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.3/ai-for-safari-1.3.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
 Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime le fichier et arrête-toi.
@@ -38,14 +38,13 @@ Le script vérifie les empreintes de chaque fichier, copie tout dans
 
 ## 4. Ce que la personne fait elle-même
 
-Lis-lui la liste que le script affiche à la fin. Ce sont ses réglages et ses accords :
+Dans Safari, une seule fois : Réglages > Extensions, cocher « AI for Safari » puis « Toujours autoriser sur tous les
+sites web ». Ensuite, le bouton boussole de la barre d'outils ouvre le panneau.
 
-1. Safari > Réglages > Extensions : cocher « AI for Safari », puis « Toujours autoriser sur tous les sites web ».
-2. Safari > Réglages > Avancé : fonctionnalités pour les développeurs, puis « Autoriser JavaScript depuis les
-   événements Apple ».
-3. Ouvrir le panneau : relier l'extension (même code à 4 chiffres dans le panneau et dans la fenêtre de macOS), se
-   connecter à son compte Claude, choisir les sites.
-4. Accepter les demandes de macOS dont elle se sert (Automatisation, Microphone, Reconnaissance vocale, son).
+macOS ne demande un droit qu'au moment où il sert pour la première fois (micro, son des pages, pilotage de Safari).
+Pour que Claude agisse dans les pages : Safari > Réglages > Avancé > « Afficher les fonctionnalités pour les
+développeurs », puis Développement > Réglages pour les développeurs > « Autoriser JavaScript depuis les événements
+Apple ».
 
 ## 5. Vérifier
 
