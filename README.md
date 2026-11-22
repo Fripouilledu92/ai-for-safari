@@ -39,3 +39,7 @@ Une version signée et vérifiée suivra.
 
 Lien à donner à Claude Code pour installer :
 `https://github.com/Fripouilledu92/ai-for-safari/blob/main/INSTALLER.md`
+
+## Licence
+
+MIT, voir `LICENSE`.
