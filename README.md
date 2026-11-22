@@ -31,11 +31,9 @@ Le plus simple : donne à Claude Code le lien vers `INSTALLER.md` et dis-lui « 
 
 Voir la fin de `distribution/INSTALLER.md`.
 
-## État de cette version (1.0)
+## État de cette version (1.1)
 
-L'extension de cette archive n'est pas encore vérifiée par Apple. Safari ne la charge que si tu coches
-Développement > « Autoriser les extensions non signées », à refaire à chaque lancement de Safari.
-Une version signée et vérifiée suivra.
+L'extension est signée (Developer ID) et vérifiée par Apple : Safari la charge normalement.
 
 Lien à donner à Claude Code pour installer :
 `https://github.com/Fripouilledu92/ai-for-safari/blob/main/INSTALLER.md`

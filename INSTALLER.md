@@ -17,11 +17,11 @@ Il faut macOS 14 ou plus, `claude` et `swiftc`. S'il manque `swiftc`, demande à
 
 ## 2. Télécharger et vérifier l'archive
 
-Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.0/ai-for-safari-1.0.zip`
-Empreinte attendue (SHA-256) : `66d99146c79278a3f0d141c7bc1116cbc537a710fdd6abc82d8cfebeb81a0321`
+Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.1/ai-for-safari-1.1.zip`
+Empreinte attendue (SHA-256) : `90d1898a09159329acc087e3f80ac2e2983a1331410321b913f8e1e8ebd086c3`
 
 ```bash
-mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.0/ai-for-safari-1.0.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.1/ai-for-safari-1.1.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
 Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime le fichier et arrête-toi.
