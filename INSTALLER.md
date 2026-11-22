@@ -17,11 +17,11 @@ Il faut macOS 14 ou plus, `claude` et `swiftc`. S'il manque `swiftc`, demande à
 
 ## 2. Télécharger et vérifier l'archive
 
-Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.1/ai-for-safari-1.1.zip`
-Empreinte attendue (SHA-256) : `90d1898a09159329acc087e3f80ac2e2983a1331410321b913f8e1e8ebd086c3`
+Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.2/ai-for-safari-1.2.zip`
+Empreinte attendue (SHA-256) : `f9cf14b5d824cfdf901e274e5d42ca65aef316ac6d450780bff64d7fd8b7d750`
 
 ```bash
-mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.1/ai-for-safari-1.1.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.2/ai-for-safari-1.2.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
 Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime le fichier et arrête-toi.
@@ -40,7 +40,7 @@ Le script vérifie les empreintes de chaque fichier, copie tout dans
 
 Lis-lui la liste que le script affiche à la fin. Ce sont ses réglages et ses accords :
 
-1. Safari > Réglages > Extensions : cocher « Claude », puis « Toujours autoriser sur tous les sites web ».
+1. Safari > Réglages > Extensions : cocher « AI for Safari », puis « Toujours autoriser sur tous les sites web ».
 2. Safari > Réglages > Avancé : fonctionnalités pour les développeurs, puis « Autoriser JavaScript depuis les
    événements Apple ».
 3. Ouvrir le panneau : relier l'extension (même code à 4 chiffres dans le panneau et dans la fenêtre de macOS), se
