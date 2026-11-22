@@ -17,11 +17,11 @@ Il faut macOS 14 ou plus, `claude` et `swiftc`. S'il manque `swiftc`, demande à
 
 ## 2. Télécharger et vérifier l'archive
 
-Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.3/ai-for-safari-1.3.zip`
-Empreinte attendue (SHA-256) : `a3c707cbf1a903257c9afa46fedb2eda734c2ef90c0cac5299c535386a63292f`
+Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.4/ai-for-safari-1.4.zip`
+Empreinte attendue (SHA-256) : `d262985256d461cbf75b201da454c4363adf6fbf432b85e26502aac7cbb9fbda`
 
 ```bash
-mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.3/ai-for-safari-1.3.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.4/ai-for-safari-1.4.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
 Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime le fichier et arrête-toi.
@@ -41,10 +41,12 @@ Le script vérifie les empreintes de chaque fichier, copie tout dans
 Dans Safari, une seule fois : Réglages > Extensions, cocher « AI for Safari » puis « Toujours autoriser sur tous les
 sites web ». Ensuite, le bouton boussole de la barre d'outils ouvre le panneau.
 
-macOS ne demande un droit qu'au moment où il sert pour la première fois (micro, son des pages, pilotage de Safari).
-Pour que Claude agisse dans les pages : Safari > Réglages > Avancé > « Afficher les fonctionnalités pour les
-développeurs », puis Développement > Réglages pour les développeurs > « Autoriser JavaScript depuis les événements
-Apple ».
+macOS ne demande un droit qu'au moment où il sert pour la première fois (micro, son des pages).
+Pour que Claude agisse dans les pages, le panneau explique et vérifie deux accords au premier lancement (menu + >
+« Compte et autorisations ») : la fenêtre de macOS « contrôler Safari », et dans Safari > Réglages > Avancées >
+« Afficher les fonctionnalités pour les développeurs web », puis onglet Développeur > « Autoriser JavaScript depuis les
+événements Apple ». Si la personne demande pourquoi : rien ne quitte son Mac par ces accords, c'est un échange entre
+deux apps de son Mac (détails dans le README, « Pourquoi deux accords »). Ne coche rien à sa place.
 
 ## 5. Vérifier
 

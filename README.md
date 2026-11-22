@@ -27,11 +27,31 @@ Le plus simple : donne à Claude Code le lien vers `INSTALLER.md` et dis-lui « 
   supprimer.
 - L'installeur vérifie l'empreinte de chaque fichier et compile le pont et l'app sur ton Mac.
 
+## Pourquoi deux accords pour agir dans les pages
+
+Pour que Claude clique et écrive dans une page à ta place, deux accords sont demandés. Leurs noms font technique,
+voici ce qu'ils font vraiment :
+
+- **« AI for Safari souhaite contrôler Safari »** (fenêtre de macOS) : l'app peut ouvrir un onglet, changer de page,
+  cliquer et écrire. macOS pose cette question pour toute app qui pilote une autre app.
+- **« Autoriser JavaScript depuis les événements Apple »** (réglage de Safari) : Safari accepte ces actions quand elles
+  viennent d'une app de ton Mac. Apple le range dans les réglages pour développeurs, d'où le nom.
+
+Ce que ça ne fait pas :
+
+- Rien ne quitte ton Mac par ces accords : c'est un échange entre deux apps de ton Mac.
+- Claude n'agit que dans les onglets qu'il ouvre ou que tu lui confies, jamais sur tes mots de passe ni tes cartes.
+- Tu peux tout retirer quand tu veux : Réglages Système > Confidentialité et sécurité > Automatisation, et la case dans
+  Safari.
+
+Le panneau explique tout ça au premier lancement (menu + > « Compte et autorisations ») et vérifie les deux accords
+avec le bouton « Vérifier ». Sans eux, tu peux quand même parler à Claude ; il ne peut juste pas agir dans la page.
+
 ## Désinstaller
 
 Voir la fin de `distribution/INSTALLER.md`.
 
-## État de cette version (1.3)
+## État de cette version (1.4)
 
 L'extension est signée (Developer ID) et vérifiée par Apple : Safari la charge normalement.
 
