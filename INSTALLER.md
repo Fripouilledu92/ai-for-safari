@@ -24,11 +24,11 @@ Il faut macOS 14 ou plus, `claude` et `swiftc`. S'il manque `swiftc`, demande à
 
 ## 2. Télécharger et vérifier l'archive
 
-Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.6/ai-for-safari-1.6.zip`
-Empreinte attendue (SHA-256) : `4deaaa83a7c12d61dab9cce21a274f788ec1f3dc6425e51ffb3f3dd6beb745ee`
+Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip`
+Empreinte attendue (SHA-256) : `0fcf52c863f47aec6134960f3577b4083fc70872511dafab41e2bfb65cf6fcdb`
 
 ```bash
-mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.6/ai-for-safari-1.6.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
 Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime le fichier et arrête-toi.
@@ -39,13 +39,13 @@ Vérifie aussi que le script de l'archive est bien celui publié sur la page (m�
 `d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b`) :
 
 ```bash
-cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.6/distribution/installer.sh
+cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.7/distribution/installer.sh
 ```
 
 Si l'empreinte est la bonne et que la personne a dit oui, lance :
 
 ```bash
-cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.6/distribution/installer.sh
+cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.7/distribution/installer.sh
 ```
 
 Le script vérifie les empreintes de chaque fichier, copie tout dans

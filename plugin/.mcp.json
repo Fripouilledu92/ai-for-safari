@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ai-for-safari": {
+      "command": "/usr/bin/python3",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/serveur/serveur.py"]
+    }
+  }
+}

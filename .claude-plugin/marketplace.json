@@ -1,0 +1,15 @@
+{
+  "name": "ai-for-safari",
+  "description": "AI for Safari: let Claude read and act in Safari on your Mac.",
+  "owner": {
+    "name": "AI for Safari",
+    "url": "https://github.com/Fripouilledu92/ai-for-safari"
+  },
+  "plugins": [
+    {
+      "name": "ai-for-safari",
+      "source": "./plugin",
+      "description": "Lets Claude read and act in Safari on your Mac: open tabs, read pages, click, type, take screenshots, listen to page audio. Works with the free AI for Safari app and Safari extension installed on the same Mac. Nothing is sent anywhere except through Claude itself."
+    }
+  ]
+}

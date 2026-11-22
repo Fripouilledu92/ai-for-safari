@@ -8,7 +8,7 @@ Projet indépendant et récent. Il n'est ni fait ni approuvé par Anthropic ou p
 d'Anthropic, « Safari » une marque d'Apple. Le code a été écrit avec l'aide de Claude ; tout le code est dans le
 dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 
-**Dernière version : [1.6](https://github.com/Fripouilledu92/ai-for-safari/releases/tag/v1.6)**
+**Dernière version : [1.7](https://github.com/Fripouilledu92/ai-for-safari/releases/tag/v1.7)**
 (toutes les versions : [Releases](https://github.com/Fripouilledu92/ai-for-safari/releases)).
 
 ## Ce qu'il faut
@@ -22,7 +22,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 1. Télécharge l'archive et vérifie son empreinte :
 
    ```bash
-   mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.6/ai-for-safari-1.6.zip" && shasum -a 256 ai-for-safari.zip
+   mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && shasum -a 256 ai-for-safari.zip
    ```
 
    L'empreinte affichée doit être celle du tableau plus bas. Sinon, supprime le fichier.
@@ -30,7 +30,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 2. Déplie l'archive et **lis le script avant de le lancer** :
 
    ```bash
-   cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.6/distribution/installer.sh
+   cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.7/distribution/installer.sh
    ```
 
    C'est le même fichier que [`source/distribution/installer.sh`](source/distribution/installer.sh). Il ne demande aucun
@@ -39,7 +39,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 3. Lance-le :
 
    ```bash
-   cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.6/distribution/installer.sh
+   cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.7/distribution/installer.sh
    ```
 
    Il vérifie l'empreinte de chaque fichier, copie tout dans `~/Library/Application Support/AI for Safari`, compile le
@@ -52,11 +52,22 @@ le script : un agent qui installe un logiciel à partir d'instructions trouvées
 d'une attaque. `INSTALLER.md` demande à Claude Code de te montrer ce que fait le script et d'attendre ton accord avant
 de le lancer.
 
+## Plugin Claude Code
+
+Une fois l'app et l'extension installées, les outils existent aussi en plugin Claude Code (dossier [`plugin/`](plugin/),
+en anglais) :
+
+```
+/plugin install ai-for-safari --marketplace Fripouilledu92/ai-for-safari
+```
+
+L'installeur ajoute déjà les mêmes outils comme connecteur `ai-for-safari` : garde l'un des deux.
+
 ## Empreintes (SHA-256)
 
 | Fichier | Empreinte |
 |---|---|
-| `ai-for-safari-1.6.zip` (archive de la version 1.6) | `4deaaa83a7c12d61dab9cce21a274f788ec1f3dc6425e51ffb3f3dd6beb745ee` |
+| `ai-for-safari-1.7.zip` (archive de la version 1.7) | `0fcf52c863f47aec6134960f3577b4083fc70872511dafab41e2bfb65cf6fcdb` |
 | `distribution/installer.sh` (dans l'archive et dans `source/`) | `d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b` |
 
 Les empreintes de tous les autres fichiers de l'archive sont dans
@@ -64,7 +75,7 @@ Les empreintes de tous les autres fichiers de l'archive sont dans
 
 ## Vérifier par toi-même
 
-Après avoir déplié l'archive (`cd ~/Downloads/ai-for-safari/ai-for-safari-1.6`) :
+Après avoir déplié l'archive (`cd ~/Downloads/ai-for-safari/ai-for-safari-1.7`) :
 
 - **L'extension est signée et vérifiée par Apple** (Developer ID, notarisée) :
 
@@ -130,6 +141,8 @@ Sans ces deux accords, tu peux quand même parler à Claude dans le panneau ; il
 Le panneau les explique et les vérifie (menu + > « Compte et autorisations »).
 
 ## Sécurité
+
+- Politique de confidentialité : [`PRIVACY.md`](PRIVACY.md).
 
 - Le programme local ne répond qu'à l'extension que tu as reliée (clé gardée dans l'extension, empreinte seule sur le
   disque, preuve d'identité à chaque connexion).

@@ -30,6 +30,11 @@ import sites  # noqa: E402
 VERSION = "1.0.0"
 RACINE = os.path.dirname(ICI)
 BINAIRE = os.path.join(RACINE, "pont", "bin", "pont-safari")
+if not os.path.exists(BINAIRE):
+    # lancé depuis le plugin Claude Code : le pont est celui que l'installeur a compilé sur ce Mac
+    _installe = os.path.expanduser("~/Library/Application Support/AI for Safari/pont/bin/pont-safari")
+    if os.path.exists(_installe):
+        BINAIRE = _installe
 ACCUEIL = "file://" + os.path.join(ICI, "accueil.html")
 C1, C2 = [255, 0, 225], [0, 255, 162]      # couleurs des marques de calibrage
 LARGEUR_MAX = 1568                          # plus grand côté d'une capture rendue
@@ -60,7 +65,9 @@ class Pont:
         if self.proc and self.proc.poll() is None:
             return
         if not os.path.exists(BINAIRE):
-            raise Erreur("Le pont n'est pas compilé. Lance : cd %s && ./pont/construire.sh" % RACINE, "PONT_ABSENT")
+            raise Erreur("Le pont vers Safari n'est pas installé sur ce Mac (%s introuvable). Il vient avec AI for Safari : "
+                         "https://github.com/Fripouilledu92/ai-for-safari (section « Installer à la main »). Dis-le à la personne "
+                         "en une phrase ; n'installe rien sans son accord." % BINAIRE, "PONT_ABSENT")
         cmd = [BINAIRE, self.mode]
         if self.mode == "banc" and os.environ.get("CLAUDE_SAFARI_BANC_CAPTEUR") == "1":
             cmd += ["--capteur", os.path.join(ICI, "capteur.js")]
@@ -1109,6 +1116,32 @@ SCHEMAS = [
           {"actions": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "input": {"type": "object"}}, "required": ["name", "input"]}}},
           ["actions"]),
 ]
+
+# Annotations MCP (exigées par le répertoire d'Anthropic) : un titre, et si l'outil ne fait que lire ou s'il peut changer
+# quelque chose de façon irréversible (envoyer un formulaire, un fichier, fermer un onglet).
+ANNOTATIONS = {
+    "tabs_context_mcp": ("List Claude's Safari tabs", True, False),
+    "tabs_create_mcp": ("Open a new tab", False, False),
+    "tabs_close_mcp": ("Close a tab", False, True),
+    "navigate": ("Go to a web address", False, False),
+    "computer": ("Click, type, scroll or take a screenshot", False, True),
+    "read_page": ("Read the page structure", True, False),
+    "find": ("Find elements in the page", True, False),
+    "form_input": ("Fill in a form field", False, True),
+    "get_page_text": ("Read the page text", True, False),
+    "javascript_tool": ("Run JavaScript in the page", False, True),
+    "read_console_messages": ("Read console messages", True, False),
+    "read_network_requests": ("Read network requests", True, False),
+    "resize_window": ("Resize Claude's window", False, False),
+    "file_upload": ("Upload a file to the page", False, True),
+    "upload_image": ("Upload a screenshot to the page", False, True),
+    "gif_creator": ("Record actions as a GIF", False, False),
+    "listen_audio": ("Listen to the page's sound", True, False),
+    "browser_batch": ("Run several browser actions", False, True),
+}
+for _s in SCHEMAS:
+    _t, _lecture, _irreversible = ANNOTATIONS[_s["name"]]
+    _s["annotations"] = {"title": _t, "readOnlyHint": _lecture, "destructiveHint": _irreversible, "openWorldHint": True}
 NOMS = set(s["name"] for s in SCHEMAS)
 
 CONSIGNE_1 = "1. Claude ne travaille que dans SA fenêtre Safari (tabs_context_mcp avec createIfEmpty:true pour la créer). Il ne touche jamais aux onglets de la personne.\n"
