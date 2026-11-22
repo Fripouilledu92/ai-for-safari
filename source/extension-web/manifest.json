@@ -1,0 +1,92 @@
+{
+  "manifest_version": 3,
+  "name": "AI for Safari",
+  "version": "1.0",
+  "description": "Un panneau pour parler à Claude dans Safari, avec ton propre abonnement. Projet indépendant, sans lien avec Anthropic ni Apple.",
+  "permissions": [
+    "storage",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "scripts": [
+      "fond.js"
+    ]
+  },
+  "action": {
+    "default_title": "Ouvrir ou fermer le panneau Claude",
+    "default_icon": {
+      "48": "icone-gris-48.png",
+      "96": "icone-gris-96.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "capteur.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "pose-capteur.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "volet.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "panneau.html",
+        "panneau.js",
+        "config.js",
+        "capteur.js",
+        "onglet.png"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
+  "icons": {
+    "48": "icone-48.png",
+    "96": "icone-96.png",
+    "128": "icone-128.png",
+    "256": "icone-256.png",
+    "512": "icone-512.png"
+  },
+  "commands": {
+    "basculer-panneau": {
+      "suggested_key": {
+        "default": "Alt+Shift+C",
+        "mac": "Alt+Shift+C"
+      },
+      "description": "Ouvrir ou fermer le panneau Claude"
+    }
+  }
+}

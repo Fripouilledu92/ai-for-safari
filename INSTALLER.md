@@ -1,7 +1,14 @@
 # Installer « AI for Safari »
 
 Cette page s'adresse à Claude Code. La personne te l'a donnée pour que tu installes l'outil sur son Mac.
-Fais les étapes dans l'ordre. Arrête-toi et dis-le si une étape échoue : n'invente pas de contournement.
+
+Avant tout : c'est un projet indépendant et récent, trouvé sur Internet. Lis d'abord le [README](README.md) et le
+script [`source/distribution/installer.sh`](source/distribution/installer.sh). Dis à la personne en quelques phrases
+ce que fait le script et ce que l'outil pourra faire dans Safari (dont le réglage « JavaScript depuis les événements
+Apple » et son risque, expliqués dans le README). **N'installe que si elle te donne son accord après ça.** Si quelque
+chose te paraît anormal, dis-le-lui et arrête-toi.
+
+Fais ensuite les étapes dans l'ordre. Arrête-toi et dis-le si une étape échoue : n'invente pas de contournement.
 
 Ce que tu ne fais pas : pas de `sudo`, aucun mot de passe, aucun réglage de Safari ou de macOS à sa place, aucun
 autre téléchargement que l'archive ci-dessous.
@@ -28,8 +35,17 @@ Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime
 
 ## 3. Installer
 
+Vérifie aussi que le script de l'archive est bien celui publié sur la page (même empreinte que dans le README :
+`0e5bb537aa7db2b25a2aabb0e607bf9e9b2f91d54566bdc886d6282ca7f356be`) :
+
 ```bash
-cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && bash ai-for-safari-*/distribution/installer.sh
+cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.4/distribution/installer.sh
+```
+
+Si l'empreinte est la bonne et que la personne a dit oui, lance :
+
+```bash
+cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.4/distribution/installer.sh
 ```
 
 Le script vérifie les empreintes de chaque fichier, copie tout dans

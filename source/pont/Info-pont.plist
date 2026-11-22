@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>fr.antoinetollu.ai-for-safari.panneau.pont</string>
+	<key>CFBundleName</key>
+	<string>pont-safari</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Accepter : Claude pourra ouvrir des onglets, cliquer et écrire dans Safari quand tu le lui demandes. Rien ne quitte ton Mac par cet accord, et tu peux le retirer dans les Réglages.</string>
+	<key>NSAudioCaptureUsageDescription</key>
+	<string>Accepter : Claude entend le son des pages Safari (vidéos, audios) pour t'en parler.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Accepter : Claude entend ton micro, seulement pendant que tu dictes un message.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Accepter : ce que tu dis au micro et le son des pages sont changés en texte pour Claude.</string>
+</dict>
+</plist>

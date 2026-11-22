@@ -1,0 +1,56 @@
+f74cf9f4ca3349633f2cef9718fc6c3a55f530d7cdc5da2c8ebfc1dcf0a09198  ./LICENSE
+42fe44a6a8dee2c1d897ac8afcb49dcd82a15212338787ac406054cff0c6e7ed  ./LISEZ-MOI.md
+b8144c69f953f7f709e0371864171ae2bfed24c7b62b70acb288b59341b4b00c  ./app/.DS_Store
+ee2f2e141d049e9476b72f2e6ae794152dd1c2a013a66bab2c057df7432e04d8  ./app/construire-app.sh
+870c3476d9d87171428617f785009b46fa7788b20dc709442a38d7e9374623b5  ./app/panneau.swift
+26b36a44f2792990168ad52d74334d09c0492a033335536a2d0a839bf9fd0091  ./connecteur/ai-for-safari.mcpb
+4a570305a91167b6f7f2ef2253f0f502ba47d3237bb6be35053c705f89049d40  ./distribution/INSTALLER.md
+0e5bb537aa7db2b25a2aabb0e607bf9e9b2f91d54566bdc886d6282ca7f356be  ./distribution/installer.sh
+88366447a0830bcba7e11beeb6ab1aabc4b4ab9797215f866d2f4f093aa736a7  ./docs/PROTOCOLE-PONT.md
+3598ecfe9b1011c139c9030385916806b568d194f357245a3f8cc0e6ec6a7a51  ./extension/AI for Safari.app/Contents/CodeResources
+1ec32f2014f410aafc5b9c8b03f714aab28335ee3ffd221990da495b562cb046  ./extension/AI for Safari.app/Contents/Info.plist
+90009c95d876b8ad89be81bf3c0698689d656e0d52218fe13f4e33fd2a5187f2  ./extension/AI for Safari.app/Contents/MacOS/Claude pour Safari
+82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0  ./extension/AI for Safari.app/Contents/PkgInfo
+c185f0264d87ebd22f7306f4df11874b95c8c7226df9841222572d6ed697bf33  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Info.plist
+79cfa11b246ffaf5f561fe67bf7d96bdfb8ba78748ef38038c22643be10a31ab  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/MacOS/Claude pour Safari Extension
+09c3a468d4801aacec5864ac5a476e59c5a402e14f3ee210b27e95e0b9ae0ae3  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/capteur.js
+34a6a196f12a158584e60f773be2861ed941b1af8658f98b67f116863e139d0b  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/config.js
+8646fc015d07a130e728aef708476e281f41c9c84fa4d9aecbf734408f5e86a4  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/fond.js
+431def8b5c4c0f51e78458253b585cb67ebc6fd37c7322e8ed2bea121c7b9f8a  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/icone-128.png
+ce7243eb71efe9e393e3917146fc155cba9e8bd88f2099e95c696a40ca6073a7  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/icone-256.png
+04bb75c0f52a9b387b5822790389785345f2eb152a48b34e6c298f0fecc09ec1  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/icone-48.png
+ace53b1d098a7aa298f43bd980a2ed82bbd708d021665b3afb35be8743a4bb20  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/icone-512.png
+06633a0136c1a76a5c59f77294c588a69dc3ac262be1b85d4887f26e65c59bed  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/icone-96.png
+3ca1ea25f2f03064d1b949f53a844055495634b4cb3350d69857b102265a1933  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/icone-gris-48.png
+13c0fe55ae61855361e8b5925ce3f4fa9571acf9cb99f199135eedeb4bb8e832  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/icone-gris-96.png
+4ac44f81a2b81267a49a5ba12a6a726fe908ccfc9d4d9409fdd62ed23e535e56  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/manifest.json
+7f70ff6b111136d86097fd885f8b449a92009bf78f683e4b5671118e426d025b  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/onglet.png
+688b2c87bedf573691afb44ed8993880b3dccbaa9326e660dae4fb3d65493631  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/panneau.html
+08489d3f282ba638a724e1aea6b48f15e06da3d28c114b7162f25476b020da25  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/panneau.js
+235e12a748e869dbcc36e6810883ed3e9f10ec4980a42f93920ac91deeda84d1  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/pose-capteur.js
+01d57196bb7ff2f7479f3923ee5aeb2541102563f77c39a8a2b97a7f2aa92a68  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/Resources/volet.js
+ad1d1ea03f977ac8eb1d04c640db2e811b34e0e1e3d00658d388c750748b318d  ./extension/AI for Safari.app/Contents/PlugIns/Claude pour Safari Extension.appex/Contents/_CodeSignature/CodeResources
+f15e69ffeaaa55f279d97b0db5cd70b819330f990515a0b30f12b250bf4c458d  ./extension/AI for Safari.app/Contents/Resources/AppIcon.icns
+62c4ba95892b49e121b5584643bdb6f451b651c248c4a3070422979c8db54651  ./extension/AI for Safari.app/Contents/Resources/Assets.car
+8f1de1d5008cd267823cf1adafc9527617b22c1b1cf0a556bd26a6e9a03f2d41  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.html
+9a79ac5af8e13f0c81211152d66ed859c9ad320fffcff4eda02b5da0a3b3e42c  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/Info.plist
+2d1b0efdd9b3a6b2fcff8f485686f23003e27fc86cdb51a01bb0e600cd554e14  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/MainMenu.nib
+6c93a9fe37793f58589343b4650c26996a65f9e9f64cb74629977e1b0abba98b  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/NSWindowController-B8D-0N-5wS.nib
+484fd1515a1045d0da51e8352c4fa15e1cb296fd1f5627c6f015f1f73e8dc082  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/XfG-lQ-9wD-view-m2S-Jp-Qdl.nib
+37df47b62c0753f10f39dc1a0c548c43f0062c2f43670aa0bad868d381774d10  ./extension/AI for Safari.app/Contents/Resources/Icon.png
+68fbf80c14692054264264ccd2ff4d0aa6f5d832359271cbdceac8c8e583a9a9  ./extension/AI for Safari.app/Contents/Resources/Script.js
+abe5a4f4eb550630383e7ef26b02b253e8cf9df95bdc49e3117650fd24df852d  ./extension/AI for Safari.app/Contents/Resources/Style.css
+6e34bb1846245b01f6064e13ab20056e61e55973eac6c41632f1b1339cc2caa0  ./extension/AI for Safari.app/Contents/_CodeSignature/CodeResources
+04b645b8a74efb4a11cca7d6512ec7cb8ac859d6146c7b699f656874062e30d7  ./panneau/discussion.py
+9517f5fd8b2fa777cb28e42f8eca986ecd73172af4d7abfbe15a78fef0c7a8d0  ./panneau/faux_claude.py
+810a2e78f115a97cb5bc9feef2daecc5d7f2d1237fe83b82a951cb947d88a96b  ./panneau/panneau.html
+1f6f20c4f097360809233ece78e4f3502b69a7faccb42bb32ff2b1e256f6e2a9  ./pont/Info-pont.plist
+5c8c343ea1f6cfcef4fac595f899449b7ffe8838680704e5249a16f1bfe57ff5  ./pont/construire.sh
+467721dc3b9a510531e88989c15369834dfe22fa3abce8431b8e1fd7937426a4  ./pont/essai_banc.py
+c4a4b0586dc3a1cbb47db96476604716819b26e967318e473b9e4a2f0f5e5f73  ./pont/pont-safari.swift
+2ee96608d059338fb3ac4775666b99ee67ffc5a44b0ff59b1c09dc15f427ea0c  ./serveur/accueil.html
+f2a076206daf32d6b9d60dbdd22d68519b0912c94c8ec1a9d706ced0ee80039c  ./serveur/capteur.js
+3f3084b5d11780c4924b2833e7529debd5cf24d1abea84dcdaefa12e6629f8a5  ./serveur/page.js
+fb49524532d1733cbb230d0ed2eaaa0963eb77b70103fbb2a691e7f678524640  ./serveur/serveur.py
+87f327bd6401c0fef2d67a170599b052e0c9a9eeae499ca417284edb670c46d8  ./serveur/sites-refuses.json
+47e71dcade6058bf7da5ae7024c9b3e5ee9356845792fbf9877aec623886ca74  ./serveur/sites.py

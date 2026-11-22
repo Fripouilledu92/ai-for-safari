@@ -1,0 +1,4 @@
+{
+  "note": "Sites que Claude refuse dans Claude in Chrome et dans le navigateur de l'app. Ils sont refusés ici aussi, même si la personne les autorise. Ajouter ici tout site vu refusé ailleurs.",
+  "sites": ["reddit.com", "redd.it"]
+}
