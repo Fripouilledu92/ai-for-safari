@@ -1,4 +1,4 @@
-// Capteur de console et de réseau de « Claude dans Safari ».
+// Capteur de console et de réseau de « AI for Safari ».
 // Le même fichier sert deux fois :
 //  - dans l'extension Safari, posé au tout début de chaque document (mode "document") : il voit tout ;
 //  - injecté par le serveur après coup (mode "tardif") : il ne voit que ce qui arrive après.

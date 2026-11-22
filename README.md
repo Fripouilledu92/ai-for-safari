@@ -8,7 +8,7 @@ Projet indépendant et récent. Il n'est ni fait ni approuvé par Anthropic ou p
 d'Anthropic, « Safari » une marque d'Apple. Le code a été écrit avec l'aide de Claude ; tout le code est dans le
 dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 
-**Dernière version : [1.4](https://github.com/Fripouilledu92/ai-for-safari/releases/tag/v1.4)**
+**Dernière version : [1.5](https://github.com/Fripouilledu92/ai-for-safari/releases/tag/v1.5)**
 (toutes les versions : [Releases](https://github.com/Fripouilledu92/ai-for-safari/releases)).
 
 ## Ce qu'il faut
@@ -22,7 +22,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 1. Télécharge l'archive et vérifie son empreinte :
 
    ```bash
-   mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.4/ai-for-safari-1.4.zip" && shasum -a 256 ai-for-safari.zip
+   mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.5/ai-for-safari-1.5.zip" && shasum -a 256 ai-for-safari.zip
    ```
 
    L'empreinte affichée doit être celle du tableau plus bas. Sinon, supprime le fichier.
@@ -30,7 +30,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 2. Déplie l'archive et **lis le script avant de le lancer** :
 
    ```bash
-   cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.4/distribution/installer.sh
+   cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.5/distribution/installer.sh
    ```
 
    C'est le même fichier que [`source/distribution/installer.sh`](source/distribution/installer.sh). Il ne demande aucun
@@ -39,7 +39,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 3. Lance-le :
 
    ```bash
-   cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.4/distribution/installer.sh
+   cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.5/distribution/installer.sh
    ```
 
    Il vérifie l'empreinte de chaque fichier, copie tout dans `~/Library/Application Support/AI for Safari`, compile le
@@ -56,15 +56,15 @@ de le lancer.
 
 | Fichier | Empreinte |
 |---|---|
-| `ai-for-safari-1.4.zip` (archive de la version 1.4) | `d262985256d461cbf75b201da454c4363adf6fbf432b85e26502aac7cbb9fbda` |
-| `distribution/installer.sh` (dans l'archive et dans `source/`) | `0e5bb537aa7db2b25a2aabb0e607bf9e9b2f91d54566bdc886d6282ca7f356be` |
+| `ai-for-safari-1.5.zip` (archive de la version 1.5) | `8b846a52f2a9202eb4184d3aa9dbcd24425e81d6d4a379eb5d9390295e986737` |
+| `distribution/installer.sh` (dans l'archive et dans `source/`) | `31fec6879ee055ad3ee7570cd38770050e0e9055730bddce8df2d7cf3a1b9774` |
 
 Les empreintes de tous les autres fichiers de l'archive sont dans
 [`source/EMPREINTES.sha256`](source/EMPREINTES.sha256) ; l'installeur les vérifie avant de copier quoi que ce soit.
 
 ## Vérifier par toi-même
 
-Après avoir déplié l'archive (`cd ~/Downloads/ai-for-safari/ai-for-safari-1.4`) :
+Après avoir déplié l'archive (`cd ~/Downloads/ai-for-safari/ai-for-safari-1.5`) :
 
 - **L'extension est signée et vérifiée par Apple** (Developer ID, notarisée) :
 

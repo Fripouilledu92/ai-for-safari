@@ -24,11 +24,11 @@ Il faut macOS 14 ou plus, `claude` et `swiftc`. S'il manque `swiftc`, demande à
 
 ## 2. Télécharger et vérifier l'archive
 
-Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.4/ai-for-safari-1.4.zip`
-Empreinte attendue (SHA-256) : `d262985256d461cbf75b201da454c4363adf6fbf432b85e26502aac7cbb9fbda`
+Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.5/ai-for-safari-1.5.zip`
+Empreinte attendue (SHA-256) : `8b846a52f2a9202eb4184d3aa9dbcd24425e81d6d4a379eb5d9390295e986737`
 
 ```bash
-mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.4/ai-for-safari-1.4.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.5/ai-for-safari-1.5.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
 Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime le fichier et arrête-toi.
@@ -36,16 +36,16 @@ Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime
 ## 3. Installer
 
 Vérifie aussi que le script de l'archive est bien celui publié sur la page (même empreinte que dans le README :
-`0e5bb537aa7db2b25a2aabb0e607bf9e9b2f91d54566bdc886d6282ca7f356be`) :
+`31fec6879ee055ad3ee7570cd38770050e0e9055730bddce8df2d7cf3a1b9774`) :
 
 ```bash
-cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.4/distribution/installer.sh
+cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.5/distribution/installer.sh
 ```
 
 Si l'empreinte est la bonne et que la personne a dit oui, lance :
 
 ```bash
-cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.4/distribution/installer.sh
+cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.5/distribution/installer.sh
 ```
 
 Le script vérifie les empreintes de chaque fichier, copie tout dans

@@ -83,9 +83,8 @@ dire "  2. Cliquer le bouton de l'extension dans la barre d'outils : le panneau 
 dire ""
 dire "Plus tard, macOS ne demandera un droit qu'au moment ou tu t'en sers pour la premiere fois :"
 dire "  le micro quand tu dictes, le son quand Claude ecoute une video, Safari quand Claude agit dans une page."
-dire "  Pour que Claude agisse dans les pages, il faut aussi : Reglages > Avance > « Afficher les fonctionnalites"
-dire "  pour les developpeurs », puis Developpement > Reglages pour les developpeurs > « Autoriser JavaScript"
-dire "  depuis les evenements Apple »."
+dire "  Pour que Claude agisse dans les pages, deux accords sont aussi demandes. Le panneau les explique et les"
+dire "  verifie (menu + > « Compte et autorisations ») : rien ne quitte le Mac par ces accords."
 if [ "$EXT_OK" != "oui" ]; then
   dire ""
   dire "Attention : l'extension de cette archive n'est pas verifiee par Apple. Safari ne la chargera que si tu coches"

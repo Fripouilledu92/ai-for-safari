@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AI for Safari",
   "version": "1.0",
-  "description": "Un panneau pour parler à Claude dans Safari, avec ton propre abonnement. Projet indépendant, sans lien avec Anthropic ni Apple.",
+  "description": "Un panneau pour parler à AI for Safari, avec ton propre abonnement. Projet indépendant, sans lien avec Anthropic ni Apple.",
   "permissions": [
     "storage",
     "contextMenus"

@@ -45,11 +45,11 @@
   }
   auFond({ claudeSafari: "cle", n: billet }).then(function (r) {
     var cleExt = r.cle || "";
-    if (!cleExt) { avis("Ce panneau ne s'ouvre que depuis le bouton Claude de Safari."); return; }
+    if (!cleExt) { avis("Ce panneau ne s'ouvre que depuis le bouton AI for Safari."); return; }
     (function verifier() {
       prouver(r.preuve || "").then(function (verdict) {
         if (verdict === "faux") {
-          avis("Le programme qui répond sur ce Mac n'est pas l'app Claude Safari.\n\nRien ne lui est envoyé.\nRelance l'app Claude Safari, puis rouvre ce panneau.");
+          avis("Le programme qui répond sur ce Mac n'est pas l'app AI for Safari.\n\nRien ne lui est envoyé.\nRelance l'app AI for Safari, puis rouvre ce panneau.");
           setTimeout(verifier, 8000); return;
         }
         if (verdict === "eteint") { avis(""); demarrerPanneau(cleExt); return; }      // app éteinte : le panneau le dit lui-même
@@ -66,7 +66,7 @@
         }
         return rep.json().then(function (d) {
           if (d.appairage === "attente") avis("Relier Safari à Claude\n\n" + d.code + "\n\nUne fenêtre vient de s'ouvrir sur ton Mac.\nSi elle montre ce même code, clique « Relier ».\nC'est demandé une seule fois.");
-          else avis("Safari n'est pas relié à Claude.\n\nLa fenêtre a été refusée, ou personne n'a répondu.\nPour réessayer tout de suite : quitte puis rouvre l'app Claude Safari.");
+          else avis("Safari n'est pas relié à Claude.\n\nLa fenêtre a été refusée, ou personne n'a répondu.\nPour réessayer tout de suite : quitte puis rouvre l'app AI for Safari.");
           setTimeout(function () { suite(premier); }, d.appairage === "attente" ? 1500 : 8000);
         });
       }).catch(function () { avis(""); demarrerPanneau(cleExt); });
@@ -274,7 +274,7 @@
     if (!oui) { rates = 0; if (avis) { avis.remove(); avis = null; } return; }
     if (avis) return;
     basculer();
-    avis = bloc("note rouge", "Claude n'est pas joignable. Ouvre l'app « Claude Safari » (elle fait le lien avec ton Claude), le panneau se reconnecte tout seul.");
+    avis = bloc("note rouge", "Claude n'est pas joignable. Ouvre l'app « AI for Safari » (elle fait le lien avec ton Claude), le panneau se reconnecte tout seul.");
     fil.appendChild(avis);
   }
   // Dans Safari le panneau se recharge à chaque changement de page. Pour que ça ne se voie pas : on montre tout de

@@ -298,7 +298,7 @@
   });
 
   // --- « Demander à Claude » sur un texte choisi : un petit bouton apparaît au bout de la sélection ; un clic ouvre le
-  // panneau de cet onglet et y pose le passage, prêt pour la question. Rien n'est envoyé avant qu'Antoine écrive.
+  // panneau de cet onglet et y pose le passage, prêt pour la question. Rien n'est envoyé avant qu'la personne écrive.
   var citationEnAttente = null, bulle = null, bulleBouton = null;
   function choix() {
     var a = document.activeElement;
