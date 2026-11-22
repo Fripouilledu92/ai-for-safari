@@ -3,7 +3,7 @@
 
 Il sert la page du panneau sur 127.0.0.1 et fait le lien avec le vrai Claude : la commande `claude`
 de la personne (Claude Code, son abonnement). Aucune clé API, aucun appel à l'API Anthropic depuis ce fichier.
-Claude reçoit les outils du serveur MCP claude-safari, en mode « panneau » : il agit dans l'onglet
+Claude reçoit les outils du serveur MCP ai-for-safari, en mode « panneau » : il agit dans l'onglet
 qu'la personne regarde.
 
   /usr/bin/python3 panneau/discussion.py            (lancé par l'app « AI for Safari »)
@@ -57,7 +57,7 @@ CONSIGNE_DEMANDE = (" Mode « demander avant d'agir » : avant de cliquer, écri
                     "tu vas faire et attends son accord. Lire la page ne demande pas d'accord.")
 CONSIGNE = (
     "Tu es Claude, dans un panneau collé à la fenêtre Safari de la personne, comme le panneau de Claude in Chrome. "
-    "la personne te parle depuis ce panneau pendant qu'il regarde une page. Tu vois et tu pilotes son onglet avec les outils claude-safari : "
+    "la personne te parle depuis ce panneau pendant qu'il regarde une page. Tu vois et tu pilotes son onglet avec les outils ai-for-safari : "
     "appelle tabs_context_mcp au début de chaque message pour savoir quel onglet il regarde. "
     "Tu peux entendre le son de la page avec listen_audio (une vidéo, un podcast) : sers-t'en dès qu'il te demande ce qui se dit. "
     "Quand l'oreille est allumée, listen_audio répond tout de suite avec ce qui vient d'être dit. "
@@ -161,11 +161,11 @@ class Discussion:
             env_mcp["CLAUDE_SAFARI_PONT"] = os.environ["CS_PANNEAU_PONT"]
         if os.environ.get("CLAUDE_SAFARI_HOME"):
             env_mcp["CLAUDE_SAFARI_HOME"] = os.environ["CLAUDE_SAFARI_HOME"]
-        mcp = {"mcpServers": {"claude-safari": {"command": "/usr/bin/python3", "args": [SERVEUR_MCP], "env": env_mcp}}}
-        permis = ["mcp__claude-safari__*"]
+        mcp = {"mcpServers": {"ai-for-safari": {"command": "/usr/bin/python3", "args": [SERVEUR_MCP], "env": env_mcp}}}
+        permis = ["mcp__ai-for-safari__*"]
         dispo = connecteurs_dispo()
         for nom in self.connecteurs:
-            if nom in dispo and nom != "claude-safari":
+            if nom in dispo and nom not in ("claude-safari", "ai-for-safari"):
                 mcp["mcpServers"][nom] = dispo[nom]
                 permis.append("mcp__%s__*" % nom)
         outils = "WebSearch,WebFetch" if self.recherche else ""
@@ -350,7 +350,7 @@ class Discussion:
 
     def options(self):
         return {"auto": self.auto, "recherche": self.recherche, "memoire": self.memoire, "connecteurs": self.connecteurs,
-                "dispo": sorted(k for k in connecteurs_dispo() if k != "claude-safari")}
+                "dispo": sorted(k for k in connecteurs_dispo() if k not in ("claude-safari", "ai-for-safari"))}
 
     # --- dictée : le micro du Mac, transcrit en direct par le pont ; barres de son et texte envoyés au panneau
     def dicter(self, action, langue="fr-FR", micro=""):

@@ -24,11 +24,11 @@ Il faut macOS 14 ou plus, `claude` et `swiftc`. S'il manque `swiftc`, demande à
 
 ## 2. Télécharger et vérifier l'archive
 
-Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.5/ai-for-safari-1.5.zip`
-Empreinte attendue (SHA-256) : `8b846a52f2a9202eb4184d3aa9dbcd24425e81d6d4a379eb5d9390295e986737`
+Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.6/ai-for-safari-1.6.zip`
+Empreinte attendue (SHA-256) : `4deaaa83a7c12d61dab9cce21a274f788ec1f3dc6425e51ffb3f3dd6beb745ee`
 
 ```bash
-mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.5/ai-for-safari-1.5.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.6/ai-for-safari-1.6.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
 Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime le fichier et arrête-toi.
@@ -36,21 +36,21 @@ Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime
 ## 3. Installer
 
 Vérifie aussi que le script de l'archive est bien celui publié sur la page (même empreinte que dans le README :
-`31fec6879ee055ad3ee7570cd38770050e0e9055730bddce8df2d7cf3a1b9774`) :
+`d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b`) :
 
 ```bash
-cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.5/distribution/installer.sh
+cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.6/distribution/installer.sh
 ```
 
 Si l'empreinte est la bonne et que la personne a dit oui, lance :
 
 ```bash
-cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.5/distribution/installer.sh
+cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.6/distribution/installer.sh
 ```
 
 Le script vérifie les empreintes de chaque fichier, copie tout dans
 `~/Library/Application Support/AI for Safari`, compile le pont et l'app sur place, branche le connecteur
-`claude-safari` dans Claude Code, puis ouvre les deux apps.
+`ai-for-safari` dans Claude Code, puis ouvre les deux apps.
 
 ## 4. Ce que la personne fait elle-même
 
@@ -67,17 +67,17 @@ deux apps de son Mac (détails dans le README, « Pourquoi deux accords »). Ne 
 ## 5. Vérifier
 
 ```bash
-claude mcp list | grep claude-safari
+claude mcp list | grep ai-for-safari
 ```
 
-La ligne doit finir par « Connected ». Les outils `mcp__claude-safari__*` existent dans les nouvelles sessions.
+La ligne doit finir par « Connected ». Les outils `mcp__ai-for-safari__*` existent dans les nouvelles sessions.
 
 Pour l'app Claude de bureau : ouvrir `connecteur/ai-for-safari.mcpb` de l'archive et accepter l'installation.
 
 ## Désinstaller
 
 ```bash
-claude mcp remove --scope user claude-safari; rm -rf ~/Library/Application\ Support/AI\ for\ Safari
+claude mcp remove --scope user ai-for-safari; rm -rf ~/Library/Application\ Support/AI\ for\ Safari
 ```
 
 Puis décocher l'extension dans Safari > Réglages > Extensions.

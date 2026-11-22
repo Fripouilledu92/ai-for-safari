@@ -1149,7 +1149,7 @@ def appeler(outils, nom, args):
     except Erreur as e:
         contenu, ok, code = [texte(str(e))], False, e.code
     except Exception as e:  # une erreur du serveur ne doit pas couper la session
-        contenu, ok, code = [texte("Erreur interne de claude-safari : %s: %s" % (type(e).__name__, e))], False, "INTERNE"
+        contenu, ok, code = [texte("Erreur interne d AI for Safari : %s: %s" % (type(e).__name__, e))], False, "INTERNE"
     journal({"t": time.strftime("%Y-%m-%d %H:%M:%S"), "outil": nom, "action": (args or {}).get("action"), "ms": int((time.time() - debut) * 1000), "ok": ok, "code": code})
     return {"content": contenu, "isError": not ok}
 
@@ -1180,7 +1180,7 @@ def main():
             if methode == "initialize":
                 version = (m.get("params") or {}).get("protocolVersion") or "2025-06-18"
                 consignes = CONSIGNES.replace(CONSIGNE_1, CONSIGNE_1_PANNEAU) if safari.panneau else CONSIGNES
-                rep = {"protocolVersion": version, "capabilities": {"tools": {}}, "serverInfo": {"name": "claude-safari", "version": VERSION}, "instructions": consignes}
+                rep = {"protocolVersion": version, "capabilities": {"tools": {}}, "serverInfo": {"name": "ai-for-safari", "version": VERSION}, "instructions": consignes}
             elif methode == "ping":
                 rep = {}
             elif methode == "tools/list":

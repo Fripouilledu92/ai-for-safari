@@ -68,9 +68,10 @@ if [ "${CS_SANS_BRANCHER:-}" = "1" ]; then
 fi
 
 # 4. Connecteur dans Claude Code
-"$CLAUDE" mcp remove --scope user claude-safari >/dev/null 2>&1 || true
-"$CLAUDE" mcp add --scope user claude-safari -- /usr/bin/python3 "$CIBLE/serveur/serveur.py" >/dev/null
-dire "Connecteur « claude-safari » branche dans Claude Code (nouvelles sessions)."
+"$CLAUDE" mcp remove --scope user claude-safari >/dev/null 2>&1 || true      # ancien nom (versions 1.0 a 1.5)
+"$CLAUDE" mcp remove --scope user ai-for-safari >/dev/null 2>&1 || true
+"$CLAUDE" mcp add --scope user ai-for-safari -- /usr/bin/python3 "$CIBLE/serveur/serveur.py" >/dev/null
+dire "Connecteur « ai-for-safari » branche dans Claude Code (nouvelles sessions)."
 
 # 5. Ouverture
 open "$CIBLE/app/AI for Safari.app"

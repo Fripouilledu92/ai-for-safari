@@ -8,7 +8,7 @@ Projet indépendant et récent. Il n'est ni fait ni approuvé par Anthropic ou p
 d'Anthropic, « Safari » une marque d'Apple. Le code a été écrit avec l'aide de Claude ; tout le code est dans le
 dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 
-**Dernière version : [1.5](https://github.com/Fripouilledu92/ai-for-safari/releases/tag/v1.5)**
+**Dernière version : [1.6](https://github.com/Fripouilledu92/ai-for-safari/releases/tag/v1.6)**
 (toutes les versions : [Releases](https://github.com/Fripouilledu92/ai-for-safari/releases)).
 
 ## Ce qu'il faut
@@ -22,7 +22,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 1. Télécharge l'archive et vérifie son empreinte :
 
    ```bash
-   mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.5/ai-for-safari-1.5.zip" && shasum -a 256 ai-for-safari.zip
+   mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.6/ai-for-safari-1.6.zip" && shasum -a 256 ai-for-safari.zip
    ```
 
    L'empreinte affichée doit être celle du tableau plus bas. Sinon, supprime le fichier.
@@ -30,7 +30,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 2. Déplie l'archive et **lis le script avant de le lancer** :
 
    ```bash
-   cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.5/distribution/installer.sh
+   cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.6/distribution/installer.sh
    ```
 
    C'est le même fichier que [`source/distribution/installer.sh`](source/distribution/installer.sh). Il ne demande aucun
@@ -39,11 +39,11 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 3. Lance-le :
 
    ```bash
-   cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.5/distribution/installer.sh
+   cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.6/distribution/installer.sh
    ```
 
    Il vérifie l'empreinte de chaque fichier, copie tout dans `~/Library/Application Support/AI for Safari`, compile le
-   pont et l'app du panneau sur ton Mac, et ajoute le connecteur `claude-safari` à Claude Code.
+   pont et l'app du panneau sur ton Mac, et ajoute le connecteur `ai-for-safari` à Claude Code.
 
 4. Dans Safari > Réglages > Extensions : coche « AI for Safari », puis « Toujours autoriser sur tous les sites web ».
 
@@ -56,15 +56,15 @@ de le lancer.
 
 | Fichier | Empreinte |
 |---|---|
-| `ai-for-safari-1.5.zip` (archive de la version 1.5) | `8b846a52f2a9202eb4184d3aa9dbcd24425e81d6d4a379eb5d9390295e986737` |
-| `distribution/installer.sh` (dans l'archive et dans `source/`) | `31fec6879ee055ad3ee7570cd38770050e0e9055730bddce8df2d7cf3a1b9774` |
+| `ai-for-safari-1.6.zip` (archive de la version 1.6) | `4deaaa83a7c12d61dab9cce21a274f788ec1f3dc6425e51ffb3f3dd6beb745ee` |
+| `distribution/installer.sh` (dans l'archive et dans `source/`) | `d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b` |
 
 Les empreintes de tous les autres fichiers de l'archive sont dans
 [`source/EMPREINTES.sha256`](source/EMPREINTES.sha256) ; l'installeur les vérifie avant de copier quoi que ce soit.
 
 ## Vérifier par toi-même
 
-Après avoir déplié l'archive (`cd ~/Downloads/ai-for-safari/ai-for-safari-1.5`) :
+Après avoir déplié l'archive (`cd ~/Downloads/ai-for-safari/ai-for-safari-1.6`) :
 
 - **L'extension est signée et vérifiée par Apple** (Developer ID, notarisée) :
 
@@ -139,7 +139,7 @@ Le panneau les explique et les vérifie (menu + > « Compte et autorisations »)
 ## Désinstaller
 
 ```bash
-claude mcp remove --scope user claude-safari; rm -rf ~/Library/Application\ Support/AI\ for\ Safari ~/.claude-safari
+claude mcp remove --scope user ai-for-safari; rm -rf ~/Library/Application\ Support/AI\ for\ Safari ~/.claude-safari
 ```
 
 Puis décoche l'extension dans Safari > Réglages > Extensions, et retire l'accord dans Réglages Système >
