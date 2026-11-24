@@ -123,9 +123,12 @@ def traduire(code, texte):
 _conversation = []
 
 
-def conversation_appelante():
-    """La conversation Claude qui a lancé ce serveur : l'app Claude lance `claude --resume=<id>` (ou --session-id),
-    et ce serveur est son enfant. Rend l'identifiant, ou None."""
+def conversation_appelante(outil=None):
+    """La conversation Claude pour laquelle ce serveur agit. Deux cas :
+    - lancé par une conversation (`claude --resume=<id>` ou --session-id) : l'identifiant est sur la ligne de commande
+      du parent ;
+    - lancé par l'app Claude elle-même (connecteur de l'app, partagé) : la conversation est celle dont le journal vient
+      d'enregistrer l'appel de cet outil (l'app l'écrit avant de l'exécuter). Rend l'identifiant, ou None."""
     if not _conversation:
         ident = None
         try:
@@ -136,7 +139,33 @@ def conversation_appelante():
         except (OSError, subprocess.TimeoutExpired):
             pass
         _conversation.append(os.environ.get("CLAUDE_SAFARI_CONVERSATION") or ident)
-    return _conversation[0]
+    if _conversation[0] or not outil:
+        return _conversation[0]
+    return conversation_du_journal(outil)
+
+
+def conversation_du_journal(outil):
+    """Le journal de conversation (~/.claude/projects/*/<id>.jsonl) modifié dans les 30 dernières secondes dont le dernier
+    appel d'outil Safari est cet outil. S'il y en a plusieurs, le plus récent."""
+    import glob
+    fin = re.compile(r'"type":"tool_use","id":"[^"]+","name":"mcp__[A-Za-z0-9_-]*__(\w+)"')
+    meilleur = (0, None)
+    for chemin in glob.glob(os.path.join(os.path.expanduser("~/.claude/projects"), "*", "*.jsonl")):
+        try:
+            quand = os.path.getmtime(chemin)
+            if time.time() - quand > 30 or quand <= meilleur[0]:
+                continue
+            with open(chemin, "rb") as f:
+                f.seek(max(0, os.path.getsize(chemin) - 400000))
+                queue = f.read().decode("utf-8", "replace")
+        except OSError:
+            continue
+        noms = [m for m in fin.findall(queue) if m in NOMS]
+        if noms and noms[-1] == outil:
+            ident = os.path.basename(chemin)[:-6]
+            if re.fullmatch(r"[0-9a-fA-F-]{36}", ident):
+                meilleur = (quand, ident)
+    return meilleur[1]
 
 
 # ----------------------------------------------------------------------------- état
@@ -223,14 +252,14 @@ class Safari:
         """Index réel dans la fenêtre = place dans self.onglets + 1 + onglets épinglés (fenêtre de Claude seulement)."""
         return 0 if self.panneau else self.epingles
 
-    def lier_panneau(self, idx, o):
+    def lier_panneau(self, idx, o, outil=None):
         """Claude Code (ou l'app Claude) agit dans cet onglet : le panneau AI for Safari s'y ouvre, sur la même
         conversation, pour qu'la personne continue à lui parler depuis Safari. Une fois par onglet. Sans conversation
         connue (Claude lancé sans identifiant) ou sans extension dans la page, rien ne se passe."""
-        if (self.panneau and not self.attache) or o.id in self.lies:
+        if self.panneau and not self.attache:
             return
-        session = conversation_appelante()
-        if not session:
+        session = conversation_appelante(outil)
+        if not session or (o.id, session) in self.lies:
             return
         try:
             marque = self.js(idx, "document.documentElement.getAttribute('data-cs-onglet')||''", 5)
@@ -249,7 +278,7 @@ class Safari:
             urllib.request.urlopen(req, timeout=5).read()
         except Exception:
             return                       # app du panneau fermée, ou ancienne version : Claude agit quand même
-        self.lies.add(o.id)
+        self.lies.add((o.id, session))
         try:
             self.page(idx, o, "ouvrirPanneau")
         except Erreur:
@@ -701,7 +730,7 @@ class Outils:
     def tabs_attach_mcp(self, a):
         o = self.s.attacher()
         try:
-            self.s.lier_panneau(*self.s.index(o.id))
+            self.s.lier_panneau(*self.s.index(o.id), outil="tabs_attach_mcp")
         except Erreur:
             pass
         return [texte("la personne t'a confié son onglet : tabId %d, « %s », %s. Agis-y avec ce tabId (get_page_text, find, computer…) ; "
@@ -778,7 +807,7 @@ class Outils:
             self.s.page(idx, o, "voyant")
         except Erreur:
             pass
-        self.s.lier_panneau(idx, o)
+        self.s.lier_panneau(idx, o, outil="navigate")
         self.s.image_gif(idx, o, [{"type": "texte", "texte": "Ouvre " + sites.hote(o.url)}])
         return [texte(prefixe + "Page ouverte : %s\nTitre : %s%s" % (o.url, o.titre, "" if fini else "\n(La page charge encore.)"))]
 
@@ -1335,6 +1364,11 @@ def appeler(outils, nom, args):
     try:
         contenu = getattr(outils, nom)(args or {})
         ok, code = True, None
+        if isinstance((args or {}).get("tabId"), int) and nom not in ("tabs_close_mcp", "navigate"):
+            try:
+                outils.s.lier_panneau(*outils.s.index(args["tabId"]), outil=nom)
+            except Exception:
+                pass
     except Erreur as e:
         contenu, ok, code = [texte(str(e))], False, e.code
     except Exception as e:  # une erreur du serveur ne doit pas couper la session
