@@ -20,11 +20,11 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 ## Installer en une commande
 
 Dans l'app Terminal, colle cette ligne. Elle télécharge l'archive dans un dossier temporaire, **s'arrête si
-l'empreinte n'est pas celle du tableau plus bas**, puis lance l'installeur (lisible dans
+l'empreinte de l'archive ou du script n'est pas celle du tableau plus bas**, puis lance l'installeur (lisible dans
 [`source/distribution/installer.sh`](source/distribution/installer.sh)) :
 
 ```bash
-mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.8/ai-for-safari-1.8.zip" && echo "a31847382fe6653a307803522abbbb7fb86f6f7810ee4a637e23d127d4e82bad  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && bash ai-for-safari-1.8/distribution/installer.sh
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.8/ai-for-safari-1.8.zip" && echo "a31847382fe6653a307803522abbbb7fb86f6f7810ee4a637e23d127d4e82bad  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && echo "d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b  ai-for-safari-1.8/distribution/installer.sh" | shasum -a 256 -c - && bash ai-for-safari-1.8/distribution/installer.sh
 ```
 
 Puis, dans Safari > Réglages > Extensions : coche « AI for Safari », puis « Toujours autoriser sur tous les sites web ».
