@@ -627,13 +627,27 @@ end verifier
 on fenetre_creer(u)
 	-- La fenêtre de Claude est celle qui N'EXISTAIT PAS avant. Jamais « la fenêtre de devant » : c'est celle
 	-- de la personne (le 21/11, ce repli a fait agir les essais dans ses onglets). Pas trouvée : erreur, on ne devine pas.
+	-- Deux Claude peuvent ouvrir leur fenêtre au même moment : chacun marque son adresse (après « # ») et ne prend que
+	-- la nouvelle fenêtre qui porte SA marque.
+	set marque to ""
+	if u contains "#" then
+		set AppleScript's text item delimiters to "#"
+		set marque to last text item of u
+		set AppleScript's text item delimiters to ""
+	end if
 	tell application "Safari"
 		set avant to id of every window
 		make new document with properties {URL:u}
-		repeat 40 times
+		repeat 60 times
 			set apres to id of every window
 			repeat with i in apres
-				if avant does not contain (contents of i) then return (contents of i)
+				set w to contents of i
+				if avant does not contain w then
+					if marque is "" then return w
+					try
+						if (URL of current tab of window id w) contains marque then return w
+					end try
+				end if
 			end repeat
 			delay 0.05
 		end repeat

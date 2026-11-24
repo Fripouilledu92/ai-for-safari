@@ -8,7 +8,7 @@ Projet indépendant et récent. Il n'est ni fait ni approuvé par Anthropic ou p
 d'Anthropic, « Safari » une marque d'Apple. Le code a été écrit avec l'aide de Claude ; tout le code est dans le
 dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 
-**Dernière version : [1.13](https://github.com/Fripouilledu92/ai-for-safari/releases/tag/v1.13)**
+**Dernière version : [1.14](https://github.com/Fripouilledu92/ai-for-safari/releases/tag/v1.14)**
 (toutes les versions : [Releases](https://github.com/Fripouilledu92/ai-for-safari/releases)).
 
 ## Ce qu'il faut
@@ -34,7 +34,7 @@ l'empreinte de l'archive ou du script n'est pas celle du tableau plus bas**, pui
 [`source/distribution/installer.sh`](source/distribution/installer.sh)) :
 
 ```bash
-mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.13/ai-for-safari-1.13.zip" && echo "a0d6c61b1908a19baac36e2964388b6abe17ffed4bc54feef8835d771bb1b2a2  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && echo "145bcd6f4ef2e68b213478ae9ac6a474dafa627a823d9943a0fe92e8222783e7  ai-for-safari-1.13/distribution/installer.sh" | shasum -a 256 -c - && bash ai-for-safari-1.13/distribution/installer.sh
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.14/ai-for-safari-1.14.zip" && echo "099aef0d283896844ca6606f83aa6b539aff6c9148439df17c42c0dd26a4ac57  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && echo "145bcd6f4ef2e68b213478ae9ac6a474dafa627a823d9943a0fe92e8222783e7  ai-for-safari-1.14/distribution/installer.sh" | shasum -a 256 -c - && bash ai-for-safari-1.14/distribution/installer.sh
 ```
 
 Puis, dans Safari > Réglages > Extensions : coche « AI for Safari », puis « Toujours autoriser sur tous les sites web ».
@@ -44,7 +44,7 @@ Puis, dans Safari > Réglages > Extensions : coche « AI for Safari », puis « 
 1. Télécharge l'archive et vérifie son empreinte :
 
    ```bash
-   mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.13/ai-for-safari-1.13.zip" && shasum -a 256 ai-for-safari.zip
+   mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.14/ai-for-safari-1.14.zip" && shasum -a 256 ai-for-safari.zip
    ```
 
    L'empreinte affichée doit être celle du tableau plus bas. Sinon, supprime le fichier.
@@ -52,7 +52,7 @@ Puis, dans Safari > Réglages > Extensions : coche « AI for Safari », puis « 
 2. Déplie l'archive et **lis le script avant de le lancer** :
 
    ```bash
-   cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.13/distribution/installer.sh
+   cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.14/distribution/installer.sh
    ```
 
    C'est le même fichier que [`source/distribution/installer.sh`](source/distribution/installer.sh). Il ne demande aucun
@@ -61,7 +61,7 @@ Puis, dans Safari > Réglages > Extensions : coche « AI for Safari », puis « 
 3. Lance-le :
 
    ```bash
-   cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.13/distribution/installer.sh
+   cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.14/distribution/installer.sh
    ```
 
    Il vérifie l'empreinte de chaque fichier, copie tout dans `~/Library/Application Support/AI for Safari`, compile le
@@ -89,7 +89,7 @@ L'installeur ajoute déjà les mêmes outils comme connecteur `ai-for-safari` : 
 
 | Fichier | Empreinte |
 |---|---|
-| `ai-for-safari-1.13.zip` (archive de la version 1.13) | `a0d6c61b1908a19baac36e2964388b6abe17ffed4bc54feef8835d771bb1b2a2` |
+| `ai-for-safari-1.14.zip` (archive de la version 1.14) | `099aef0d283896844ca6606f83aa6b539aff6c9148439df17c42c0dd26a4ac57` |
 | `distribution/installer.sh` (dans l'archive et dans `source/`) | `145bcd6f4ef2e68b213478ae9ac6a474dafa627a823d9943a0fe92e8222783e7` |
 
 Les empreintes de tous les autres fichiers de l'archive sont dans
@@ -97,7 +97,7 @@ Les empreintes de tous les autres fichiers de l'archive sont dans
 
 ## Vérifier par toi-même
 
-Après avoir déplié l'archive (`cd "${TMPDIR:-/tmp}/ai-for-safari/ai-for-safari-1.13"`) :
+Après avoir déplié l'archive (`cd "${TMPDIR:-/tmp}/ai-for-safari/ai-for-safari-1.14"`) :
 
 - **L'extension est signée et vérifiée par Apple** (Developer ID, notarisée) :
 

@@ -123,7 +123,7 @@ def traduire(code, texte):
 _conversation = []
 
 
-def conversation_appelante(outil=None):
+def conversation_appelante(outil=None, args=None):
     """La conversation Claude pour laquelle ce serveur agit. Deux cas :
     - lancé par une conversation (`claude --resume=<id>` ou --session-id) : l'identifiant est sur la ligne de commande
       du parent ;
@@ -141,21 +141,21 @@ def conversation_appelante(outil=None):
         _conversation.append(os.environ.get("CLAUDE_SAFARI_CONVERSATION") or ident)
     if _conversation[0] or not outil:
         return _conversation[0]
-    return conversation_du_journal(outil)
+    return conversation_du_journal(outil, args)
 
 
-def conversation_du_journal(outil):
+def conversation_du_journal(outil, args=None):
     """Le journal de conversation (~/.claude/projects/*/<id>.jsonl) modifié dans les 30 dernières secondes dont le dernier
     appel d'outil Safari est cet outil ET n'a pas encore de réponse : c'est la conversation qui attend ce serveur. (Une
     branche reprise par le panneau, qui a déjà eu ses réponses, n'est pas prise pour elle.) Le plus récent s'il y en a
     plusieurs."""
     import glob
     appel = re.compile(r'"type":"tool_use","id":"([^"]+)","name":"mcp__[A-Za-z0-9_-]*__(\w+)"')
-    meilleur = (0, None)
+    meilleur = (-1, 0)
     for chemin in glob.glob(os.path.join(os.path.expanduser("~/.claude/projects"), "*", "*.jsonl")):
         try:
             quand = os.path.getmtime(chemin)
-            if time.time() - quand > 30 or quand <= meilleur[0]:
+            if time.time() - quand > 30:
                 continue
             with open(chemin, "rb") as f:
                 f.seek(max(0, os.path.getsize(chemin) - 400000))
@@ -169,9 +169,24 @@ def conversation_du_journal(outil):
         if ('"tool_use_id":"%s"' % ident_appel) in queue[fin:]:
             continue                      # cet appel a déjà sa réponse : ce n'est pas lui qui attend
         ident = os.path.basename(chemin)[:-6]
-        if re.fullmatch(r"[0-9a-fA-F-]{36}", ident):
-            meilleur = (quand, ident)
-    return meilleur[1]
+        if not re.fullmatch(r"[0-9a-fA-F-]{36}", ident):
+            continue
+        # Deux conversations qui appellent le même outil au même instant : celle dont les paramètres sont les nôtres
+        # passe devant (onglet, adresse, texte…).
+        juste = 0
+        if args is not None:
+            debut_ligne = queue.rfind("\n", 0, fin) + 1
+            fin_ligne = queue.find("\n", fin)
+            try:
+                ligne = json.loads(queue[debut_ligne:fin_ligne if fin_ligne >= 0 else None])
+                for b in (ligne.get("message") or {}).get("content") or []:
+                    if isinstance(b, dict) and b.get("id") == ident_appel and b.get("input") == args:
+                        juste = 1
+            except (ValueError, AttributeError):
+                pass
+        if (juste, quand) > meilleur[:2]:
+            meilleur = (juste, quand, ident)
+    return meilleur[2] if len(meilleur) == 3 else None
 
 
 # ----------------------------------------------------------------------------- état
@@ -258,13 +273,13 @@ class Safari:
         """Index réel dans la fenêtre = place dans self.onglets + 1 + onglets épinglés (fenêtre de Claude seulement)."""
         return 0 if self.panneau else self.epingles
 
-    def lier_panneau(self, idx, o, outil=None):
+    def lier_panneau(self, idx, o, outil=None, args=None):
         """Claude Code (ou l'app Claude) agit dans cet onglet : le panneau AI for Safari s'y ouvre, sur la même
         conversation, pour qu'la personne continue à lui parler depuis Safari. Une fois par onglet. Sans conversation
         connue (Claude lancé sans identifiant) ou sans extension dans la page, rien ne se passe."""
         if self.panneau and not self.attache:
             return
-        session = conversation_appelante(outil)
+        session = conversation_appelante(outil, args)
         if not session or (o.id, session) in self.lies:
             return
         try:
@@ -363,7 +378,8 @@ class Safari:
             return self.contexte_panneau()
         self.synchroniser()
         if not self.onglets and creer:
-            self.fenetre = self.pont("fenetre_creer", url=ACCUEIL)["fenetre"]
+            # marque unique : si un autre Claude ouvre sa fenêtre au même moment, chacun retrouve la sienne
+            self.fenetre = self.pont("fenetre_creer", url=ACCUEIL + "#cs-%d-%d" % (os.getpid(), int(time.time() * 1000)))["fenetre"]
             # Safari ouvre la nouvelle fenêtre avec les onglets épinglés de la personne en tête : seul le dernier est à Claude
             self.epingles = max(0, len(self.pont("onglets", fenetre=self.fenetre, leger=True)["onglets"]) - 1)
             self.onglets = [self.nouvel_onglet()]
@@ -736,7 +752,7 @@ class Outils:
     def tabs_attach_mcp(self, a):
         o = self.s.attacher()
         try:
-            self.s.lier_panneau(*self.s.index(o.id), outil="tabs_attach_mcp")
+            self.s.lier_panneau(*self.s.index(o.id), outil="tabs_attach_mcp", args=a)
         except Erreur:
             pass
         return [texte("la personne t'a confié son onglet : tabId %d, « %s », %s. Agis-y avec ce tabId (get_page_text, find, computer…) ; "
@@ -813,7 +829,7 @@ class Outils:
             self.s.page(idx, o, "voyant")
         except Erreur:
             pass
-        self.s.lier_panneau(idx, o, outil="navigate")
+        self.s.lier_panneau(idx, o, outil="navigate", args=a)
         self.s.image_gif(idx, o, [{"type": "texte", "texte": "Ouvre " + sites.hote(o.url)}])
         return [texte(prefixe + "Page ouverte : %s\nTitre : %s%s" % (o.url, o.titre, "" if fini else "\n(La page charge encore.)"))]
 
@@ -903,6 +919,8 @@ class Outils:
             self.s.naviguer(idx, o, "reload")
             sortie += " Page rechargée."
         elif action in ("left_click", "double_click", "triple_click", "key", "type"):
+            if r.get("lien"):
+                self._attendre_depart(a.get("tabId"), o.url)
             sortie += self._apres_action(a.get("tabId"))
             if action != "type" and not self.dans_lot:
                 sortie += self._etat_apres(a.get("tabId"))
@@ -953,6 +971,21 @@ class Outils:
             return ""
         return ("\n\n--- Page après l'action (inutile d'attendre ou de relire) ---\n%s\n%s%s\n\nÉléments :\n%s"
                 % (r["titre"], r["texte"], "\n[…texte coupé]" if r.get("coupe") else "", r["elements"]))
+
+    def _attendre_depart(self, tab_id, avant, maxi=4.0):
+        """Un clic sur un lien du même onglet : attendre que la page parte (adresse changée ou nouveau document en cours
+        de chargement). Si rien ne bouge en `maxi` secondes, on n'insiste pas : le site a géré le clic lui-même."""
+        debut = time.time()
+        while time.time() - debut < maxi:
+            try:
+                idx, o = self.s.index(tab_id)
+                r = self.s.js(idx, "location.href+'|'+document.readyState+'|'+(window.__cs?1:0)", 3) or ""
+            except Erreur:
+                return
+            p = r.rsplit("|", 2)
+            if len(p) == 3 and (p[0].split("#")[0] != (avant or "").split("#")[0] or p[1] != "complete" or p[2] != "1"):
+                return
+            time.sleep(0.1)
 
     def _apres_action(self, tab_id):
         """Si l'action a lancé un changement de page, on attend qu'elle soit chargée."""
@@ -1372,7 +1405,7 @@ def appeler(outils, nom, args):
         ok, code = True, None
         if isinstance((args or {}).get("tabId"), int) and nom not in ("tabs_close_mcp", "navigate"):
             try:
-                outils.s.lier_panneau(*outils.s.index(args["tabId"]), outil=nom)
+                outils.s.lier_panneau(*outils.s.index(args["tabId"]), outil=nom, args=args)
             except Exception:
                 pass
     except Erreur as e:

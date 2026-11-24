@@ -97,7 +97,7 @@ Il faut macOS 14 ou plus, Claude Code (`claude`) et les outils d'Apple. S'ils ma
 Elle ouvre l'app Terminal et colle cette ligne :
 
 ```bash
-mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.13/ai-for-safari-1.13.zip" && echo "a0d6c61b1908a19baac36e2964388b6abe17ffed4bc54feef8835d771bb1b2a2  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && echo "145bcd6f4ef2e68b213478ae9ac6a474dafa627a823d9943a0fe92e8222783e7  ai-for-safari-1.13/distribution/installer.sh" | shasum -a 256 -c - && bash ai-for-safari-1.13/distribution/installer.sh
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.14/ai-for-safari-1.14.zip" && echo "099aef0d283896844ca6606f83aa6b539aff6c9148439df17c42c0dd26a4ac57  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && echo "145bcd6f4ef2e68b213478ae9ac6a474dafa627a823d9943a0fe92e8222783e7  ai-for-safari-1.14/distribution/installer.sh" | shasum -a 256 -c - && bash ai-for-safari-1.14/distribution/installer.sh
 ```
 
 Dans l'ordre : télécharge l'archive dans un dossier temporaire (pas dans Téléchargements, que macOS protège),
@@ -181,20 +181,20 @@ dans `~/Library/Application Support/AI for Safari`, ajouter le connecteur. Trava
 jamais dans Téléchargements, Bureau ou Documents.
 
 ```bash
-mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.13/ai-for-safari-1.13.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.14/ai-for-safari-1.14.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
-L'empreinte doit être `a0d6c61b1908a19baac36e2964388b6abe17ffed4bc54feef8835d771bb1b2a2`. Ensuite :
+L'empreinte doit être `099aef0d283896844ca6606f83aa6b539aff6c9148439df17c42c0dd26a4ac57`. Ensuite :
 
 ```bash
-cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.13/distribution/installer.sh
+cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.14/distribution/installer.sh
 ```
 
 L'empreinte doit être `145bcd6f4ef2e68b213478ae9ac6a474dafa627a823d9943a0fe92e8222783e7`. Si tout correspond et que
 la personne a dit oui :
 
 ```bash
-cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.13/distribution/installer.sh
+cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.14/distribution/installer.sh
 ```
 
 Si une permission est refusée : ne cherche pas d'autre chemin, donne-lui la commande de l'étape 3.

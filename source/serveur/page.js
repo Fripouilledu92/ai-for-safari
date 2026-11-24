@@ -578,11 +578,18 @@
       if (ailleurs) {
         ecoute = function (e) { bloqueParLaPage = e.defaultPrevented; e.preventDefault(); };
         window.addEventListener("click", ecoute, false);
+      } else if (lien && !droit) {
+        // Lien dans le même onglet : on note si la page l'a laissé faire, pour que le serveur attende la nouvelle page
+        // (certains sites mettent plus d'une seconde à partir ; sans ça, Claude croit que le clic n'a rien fait).
+        ecoute = function (e) { bloqueParLaPage = e.defaultPrevented; };
+        window.addEventListener("click", ecoute, false);
       }
       souris(el, "click", x, y, o2);
       if (ecoute) {
         window.removeEventListener("click", ecoute, false);
-        if (!bloqueParLaPage && /^https?:/i.test(lien.href)) suite.ouvrir = lien.href;
+        if (ailleurs && !bloqueParLaPage && /^https?:/i.test(lien.href)) suite.ouvrir = lien.href;
+        var memePage = lien.href.split("#")[0] === location.href.split("#")[0];
+        if (!ailleurs && !bloqueParLaPage && /^https?:/i.test(lien.href) && !memePage) suite.lien = lien.href;
       }
     }
     if (fois === 2) souris(el, "dblclick", x, y, { button: 0, detail: 2 });
