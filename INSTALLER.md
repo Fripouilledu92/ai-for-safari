@@ -30,11 +30,11 @@ Il faut macOS 14 ou plus, `claude` et `swiftc`. S'il manque `swiftc`, demande à
 
 ## 2. Télécharger et vérifier l'archive
 
-Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip`
-Empreinte attendue (SHA-256) : `0fcf52c863f47aec6134960f3577b4083fc70872511dafab41e2bfb65cf6fcdb`
+Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.8/ai-for-safari-1.8.zip`
+Empreinte attendue (SHA-256) : `a31847382fe6653a307803522abbbb7fb86f6f7810ee4a637e23d127d4e82bad`
 
 ```bash
-mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.8/ai-for-safari-1.8.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
 Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime le fichier et arrête-toi.
@@ -45,13 +45,13 @@ Vérifie aussi que le script de l'archive est bien celui publié sur la page (m�
 `d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b`) :
 
 ```bash
-cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.7/distribution/installer.sh
+cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.8/distribution/installer.sh
 ```
 
 Si l'empreinte est la bonne et que la personne a dit oui, lance :
 
 ```bash
-cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.7/distribution/installer.sh
+cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.8/distribution/installer.sh
 ```
 
 Le script vérifie les empreintes de chaque fichier, copie tout dans
@@ -70,7 +70,7 @@ refusée et pourquoi elle sert. Propose-lui deux choix :
    l'installeur :
 
 ```bash
-mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && echo "0fcf52c863f47aec6134960f3577b4083fc70872511dafab41e2bfb65cf6fcdb  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && bash ai-for-safari-1.7/distribution/installer.sh
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.8/ai-for-safari-1.8.zip" && echo "a31847382fe6653a307803522abbbb7fb86f6f7810ee4a637e23d127d4e82bad  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && bash ai-for-safari-1.8/distribution/installer.sh
 ```
 
 Ensuite, reprends à l'étape 4.

@@ -29,14 +29,16 @@ the two: `claude mcp remove --scope user ai-for-safari` removes the connector.
 1. "Open the Wikipedia page about Lyon in Safari and summarize the history section."
 2. "In my Safari tab, fill in the contact form with my name and the message I wrote above, but don't send it."
 3. "Play the video on this page for 20 seconds and tell me what is said."
+4. "On the page I have open in Safari, fill in the form for me." (Claude asks to take over that tab; you allow it in
+   a macOS dialog and watch it work.)
 
 ## What it runs, reads and sends
 
-- **Runs**: `/usr/bin/python3 serveur/serveur.py` (this folder), a local MCP server with 18 tools. It starts the
+- **Runs**: `/usr/bin/python3 serveur/serveur.py` (this folder), a local MCP server with 19 tools. It starts the
   Safari bridge already compiled on your Mac by the AI for Safari installer
   (`~/Library/Application Support/AI for Safari/pont/bin/pont-safari`). It downloads nothing and installs nothing.
-- **Reads**: only the Safari tabs Claude opened in its own window, or the tab you handed to it from the AI for
-  Safari panel. Page text, structure, screenshots and sound are read only when Claude calls a tool.
+- **Reads**: only the Safari tabs Claude opened in its own window, or a tab you handed to it (from the AI for Safari
+  panel, or by allowing its request in a macOS dialog). Page text, structure, screenshots and sound are read only when Claude calls a tool.
 - **Sends**: tool results go back to Claude, in your conversation, like any tool. The server makes no network
   request of its own and listens on no port.
 - **Stores**: your site choices in `~/.claude-safari`, readable by your account only. Screenshots stay in memory (the

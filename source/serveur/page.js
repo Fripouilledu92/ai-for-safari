@@ -1161,7 +1161,7 @@
     return { calme: calme, pret: true, url: location.href, titre: document.title, texte: t.texte, coupe: t.coupe, elements: a.texte };
   }
 
-  var OPS = { apercu: apercu, arbre: arbre, trouver: trouver, texte: texte, cliquer: cliquer, survoler: survoler, glisser: glisser, defiler: defiler,
+  var OPS = { voyant: function () { montrerVoyant(); return true; }, apercu: apercu, arbre: arbre, trouver: trouver, texte: texte, cliquer: cliquer, survoler: survoler, glisser: glisser, defiler: defiler,
     defilerVers: defilerVers, appuyer: appuyer, taper: taper, remplir: remplir, morceau: morceau, deposer: deposer, evaluer: evaluer,
     promesse: promesse, lireConsole: lireConsole, lireReseau: lireReseau, etat: etat, marques: marques, finMarques: finMarques,
     cacherVoyant: function (a) { return cacherVoyant(a.cache); }, voyant: function () { montrerVoyant(); return true; },

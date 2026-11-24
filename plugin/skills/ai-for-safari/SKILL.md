@@ -10,8 +10,12 @@ AI for Safari app and Safari extension (https://github.com/Fripouilledu92/ai-for
 
 ## Start
 
-1. Call `tabs_context_mcp` with `createIfEmpty: true`. You get your own Safari window and its tabs. Never touch the
-   user's other tabs.
+1. If the user wants you to act on a page **already open** in their Safari ("on this page", "in my Safari", a page
+   where they are signed in), call `tabs_attach_mcp`: macOS shows them a dialog, and if they allow it you get that
+   tab's `tabId`. They watch you work live (orange border "Claude pilote cet onglet" with a Stop button). Act only in
+   that tab. If they refuse, don't insist.
+   Otherwise call `tabs_context_mcp` with `createIfEmpty: true`: you get your own Safari window and its tabs.
+   Never touch the user's other tabs.
 2. Read pages with `get_page_text`, `read_page` or `find` before taking a screenshot. Group predictable steps in one
    `browser_batch` call.
 3. Close the tabs you opened when you are done.

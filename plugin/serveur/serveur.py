@@ -135,6 +135,7 @@ class Safari:
     def __init__(self):
         self.pont = Pont(os.environ.get("CLAUDE_SAFARI_PONT", "safari"))
         self.panneau = os.environ.get("CLAUDE_SAFARI_MODE") == "panneau"
+        self.attache = False         # la personne a confié à Claude l'onglet qu'il regardait (tabs_attach_mcp)
         self.fenetre = None
         self.onglets = []            # dans l'ordre de la barre d'onglets
         self.prochain = 1001
@@ -251,6 +252,9 @@ class Safari:
             pass
 
     def contexte(self, creer=False):
+        if self.attache:
+            self.synchroniser()
+            return [o for o in self.onglets if o.confie]
         if self.panneau:
             return self.contexte_panneau()
         self.synchroniser()
@@ -318,9 +322,59 @@ class Safari:
             self.onglets[d["index"] - 1].confie = True
         return [o for o in self.onglets if o.confie]
 
+    def attacher(self):
+        """Claude Code demande l'onglet qu'la personne regarde (sa page déjà ouverte, où il est connecté).
+        Une fenêtre lui demande son accord ; ensuite Claude agit dans cet onglet, en direct, avec la bordure
+        « Claude pilote cet onglet » et le bouton Arrêter. Rend l'onglet confié."""
+        try:
+            d = self.pont("devant")
+        except Erreur as e:
+            if e.code == "FENETRE_INTROUVABLE":
+                raise Erreur("Safari n'a aucune fenêtre ouverte : il n'y a pas d'onglet à prendre. Demande à la personne d'ouvrir la page, "
+                             "ou ouvre-la toi-même avec tabs_context_mcp (createIfEmpty:true) puis navigate.", "AUCUN_ONGLET")
+            raise
+        vus = self.pont("onglets", fenetre=d["fenetre"], leger=False)["onglets"]
+        if not 1 <= d["index"] <= len(vus):
+            raise Erreur("Onglet affiché introuvable. Réessaie dans un instant.", "ONGLET_INTROUVABLE")
+        v = vus[d["index"] - 1]
+        url, titre = v.get("url") or "", (v.get("titre") or "").strip()
+        h = sites.hote(url)
+        if not h:
+            raise Erreur("L'onglet affiché n'est pas une page web (%s). Demande à la personne d'afficher la page où agir, puis rappelle "
+                         "tabs_attach_mcp." % (url[:80] or "vide"), "ADRESSE")
+        if sites.est_refuse(h):
+            raise Erreur("%s fait partie des sites que Claude refuse. Ce n'est pas contournable : dis-le à la personne." % h, "SITE_REFUSE")
+        nom = (titre[:70] + "…") if len(titre) > 70 else (titre or h)
+        rep = self.pont("dialogue", titre="Laisser Claude agir dans cet onglet ?",
+                        message="« %s »\n%s\n\nSi tu acceptes : Claude lit cette page, y clique et y écrit, en direct sous tes yeux. "
+                                "Une bordure orange « Claude pilote cet onglet » s'affiche, avec un bouton Arrêter.\n"
+                                "Il n'agit que dans cet onglet, jamais dans tes autres onglets, et ne tape jamais de mot de passe "
+                                "ni de carte bancaire." % (nom, h),
+                        boutons=["Refuser", "Autoriser"], delai_s=60).get("bouton")
+        if rep != "Autoriser":
+            raise Erreur("la personne %s : Claude ne touche pas à cet onglet. Ne réessaie pas en boucle ; dis-le-lui en une phrase."
+                         % ("a refusé" if rep == "Refuser" else "n'a pas répondu à la fenêtre de demande"), "ONGLET_REFUSE")
+        if d["fenetre"] != self.fenetre or not self.attache:
+            self.fenetre, self.onglets, self.calibrage = d["fenetre"], [], {}
+        self.panneau = self.attache = True
+        self.une_fois.add(h)          # son accord vaut pour ce site, le temps de cette session
+        self.synchroniser()
+        o = self.onglets[d["index"] - 1]
+        o.confie, o.cree = True, False
+        if o.arrete:
+            self.relancer(d["index"], o)
+        try:
+            self.page(d["index"], o, "voyant")      # la bordure « Claude pilote cet onglet » s'affiche tout de suite
+        except Erreur:
+            pass
+        return o
+
     def creer_onglet(self, url=ACCUEIL):
         if self.panneau:
-            self.contexte_panneau()
+            if self.attache:
+                self.synchroniser()
+            else:
+                self.contexte_panneau()
             n = self.pont("onglet_creer", fenetre=self.fenetre, url=url)["index"]
             o = self.nouvel_onglet()
             self.onglets.insert(max(0, min(len(self.onglets), n - 1)), o)
@@ -572,6 +626,12 @@ class Outils:
                                                                       for t, o in zip(d["availableTabs"], onglets)]}
         note = "" if onglets else "\nAucun onglet de Claude. Passe createIfEmpty:true, ou appelle tabs_create_mcp."
         return [texte(json.dumps(d, ensure_ascii=False, indent=1) + note)]
+
+    def tabs_attach_mcp(self, a):
+        o = self.s.attacher()
+        return [texte("la personne t'a confié son onglet : tabId %d, « %s », %s. Agis-y avec ce tabId (get_page_text, find, computer…) ; "
+                      "il te voit faire en direct. N'agis dans aucun de ses autres onglets. S'il clique sur « Arrêter », arrête-toi."
+                      % (o.id, o.titre, o.url))]
 
     def tabs_create_mcp(self, a):
         o = self.s.creer_onglet()
@@ -1047,6 +1107,10 @@ SCHEMAS = [
     outil("tabs_context_mcp", "Donne les onglets de la fenêtre Safari de Claude (leurs tabId, titres, adresses). À appeler une fois avant les autres outils. "
           "Claude ne voit et ne pilote que les onglets qu'il a ouverts dans sa propre fenêtre, jamais ceux de la personne.",
           {"createIfEmpty": {"type": "boolean", "description": "Crée la fenêtre de Claude avec un onglet vide si elle n'existe pas."}}),
+    outil("tabs_attach_mcp", "Prend l'onglet qu'la personne regarde dans Safari (sa page déjà ouverte, où il est souvent connecté) pour y "
+          "agir en direct. À utiliser quand il te demande d'agir « sur la page ouverte », « dans mon Safari », « sur cet onglet ». "
+          "Une fenêtre lui demande son accord ; s'il refuse, n'insiste pas. Rend le tabId à utiliser avec les autres outils. "
+          "S'il veut une autre page, il l'affiche puis tu rappelles cet outil.", {}),
     outil("tabs_create_mcp", "Crée un nouvel onglet vide dans la fenêtre de Claude. Ferme-le avec tabs_close_mcp quand tu n'en as plus besoin.", {}),
     outil("tabs_close_mcp", "Ferme un onglet de la fenêtre de Claude. Fermer le dernier ferme la fenêtre.", {"tabId": TAB}, ["tabId"]),
     outil("navigate", "Ouvre une adresse dans un onglet de Claude, ou recule/avance dans l'historique. Attend la fin du chargement. Sans tabId, utilise le premier "
@@ -1121,6 +1185,7 @@ SCHEMAS = [
 # quelque chose de façon irréversible (envoyer un formulaire, un fichier, fermer un onglet).
 ANNOTATIONS = {
     "tabs_context_mcp": ("List Claude's Safari tabs", True, False),
+    "tabs_attach_mcp": ("Take over the tab the user is viewing", False, False),
     "tabs_create_mcp": ("Open a new tab", False, False),
     "tabs_close_mcp": ("Close a tab", False, True),
     "navigate": ("Go to a web address", False, False),
@@ -1144,7 +1209,9 @@ for _s in SCHEMAS:
     _s["annotations"] = {"title": _t, "readOnlyHint": _lecture, "destructiveHint": _irreversible, "openWorldHint": True}
 NOMS = set(s["name"] for s in SCHEMAS)
 
-CONSIGNE_1 = "1. Claude ne travaille que dans SA fenêtre Safari (tabs_context_mcp avec createIfEmpty:true pour la créer). Il ne touche jamais aux onglets de la personne.\n"
+CONSIGNE_1 = ("1. Claude travaille dans SA fenêtre Safari (tabs_context_mcp avec createIfEmpty:true pour la créer). Il ne touche jamais aux onglets "
+              "de la personne, sauf celui qu'il lui confie : quand il demande d'agir sur sa page déjà ouverte, appelle tabs_attach_mcp (une fenêtre "
+              "lui demande son accord), puis agis seulement dans cet onglet, en direct sous ses yeux.\n")
 CONSIGNE_1_PANNEAU = ("1. la personne t'écrit depuis le panneau collé à Safari. L'onglet qu'il regarde à ce moment-là t'est confié : appelle tabs_context_mcp au début "
                       "de CHAQUE message pour le connaître. Tu n'agis que dans cet onglet et dans ceux que tu ouvres toi-même, jamais dans ses autres onglets.\n")
 CONSIGNES = (
