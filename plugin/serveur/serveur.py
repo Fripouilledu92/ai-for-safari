@@ -146,9 +146,11 @@ def conversation_appelante(outil=None):
 
 def conversation_du_journal(outil):
     """Le journal de conversation (~/.claude/projects/*/<id>.jsonl) modifié dans les 30 dernières secondes dont le dernier
-    appel d'outil Safari est cet outil. S'il y en a plusieurs, le plus récent."""
+    appel d'outil Safari est cet outil ET n'a pas encore de réponse : c'est la conversation qui attend ce serveur. (Une
+    branche reprise par le panneau, qui a déjà eu ses réponses, n'est pas prise pour elle.) Le plus récent s'il y en a
+    plusieurs."""
     import glob
-    fin = re.compile(r'"type":"tool_use","id":"[^"]+","name":"mcp__[A-Za-z0-9_-]*__(\w+)"')
+    appel = re.compile(r'"type":"tool_use","id":"([^"]+)","name":"mcp__[A-Za-z0-9_-]*__(\w+)"')
     meilleur = (0, None)
     for chemin in glob.glob(os.path.join(os.path.expanduser("~/.claude/projects"), "*", "*.jsonl")):
         try:
@@ -160,11 +162,15 @@ def conversation_du_journal(outil):
                 queue = f.read().decode("utf-8", "replace")
         except OSError:
             continue
-        noms = [m for m in fin.findall(queue) if m in NOMS]
-        if noms and noms[-1] == outil:
-            ident = os.path.basename(chemin)[:-6]
-            if re.fullmatch(r"[0-9a-fA-F-]{36}", ident):
-                meilleur = (quand, ident)
+        appels = [(m.group(1), m.group(2), m.end()) for m in appel.finditer(queue) if m.group(2) in NOMS]
+        if not appels or appels[-1][1] != outil:
+            continue
+        ident_appel, _, fin = appels[-1]
+        if ('"tool_use_id":"%s"' % ident_appel) in queue[fin:]:
+            continue                      # cet appel a déjà sa réponse : ce n'est pas lui qui attend
+        ident = os.path.basename(chemin)[:-6]
+        if re.fullmatch(r"[0-9a-fA-F-]{36}", ident):
+            meilleur = (quand, ident)
     return meilleur[1]
 
 

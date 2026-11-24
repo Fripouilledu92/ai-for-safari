@@ -409,7 +409,7 @@ class Discussion:
     def lier(self, session):
         """Claude Code agit dans cet onglet : le panneau reprend SA conversation (en branche : la conversation d'origine
         n'est pas modifiée), montre ses derniers messages, et la personne peut continuer à lui parler depuis Safari."""
-        if self.lien == session:
+        if self.lien == session or self.session == session:
             return
         chemins = glob.glob(os.path.join(os.path.expanduser("~/.claude/projects"), "*", session + ".jsonl"))
         if not chemins:
@@ -1003,7 +1003,10 @@ class Page(http.server.BaseHTTPRequestHandler):
                 session = str(corps.get("session") or "")
                 if not re.fullmatch(r"[0-9a-fA-F-]{36}", session):
                     return self.rendre(400, {"erreur": "conversation invalide"})
-                D.lier(session)
+                with VERROU_D:
+                    a_nous = any(d.session == session for d in DISCUSSIONS.values())
+                if not a_nous:           # une conversation du panneau lui-même (ses branches) ne remplace rien
+                    D.lier(session)
             elif u.path == "/connexion":
                 ouvrir_connexion()
             elif u.path == "/accord":
