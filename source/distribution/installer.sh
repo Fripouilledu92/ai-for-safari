@@ -7,7 +7,7 @@
 #   1. vérifie macOS 14+, la commande `claude` (Claude Code) et le compilateur d'Apple (swiftc) ;
 #   2. copie les fichiers dans ~/Library/Application Support/AI for Safari ;
 #   3. compile sur place le pont et l'app du panneau (rien de précompilé à croire sur parole) ;
-#   4. branche le connecteur Safari dans Claude Code ;
+#   4. branche le connecteur Safari dans Claude Code, et y pose la competence ai-for-safari (quand utiliser ces outils) ;
 #   5. ouvre l'app du panneau et l'app qui porte l'extension Safari.
 # Il ne demande aucun mot de passe, n'utilise pas sudo, n'envoie rien sur Internet et ne touche à aucun réglage
 # de Safari ni de macOS : ces réglages-là restent à faire à la main (il les liste à la fin).
@@ -28,7 +28,9 @@ MAJEUR="$(sw_vers -productVersion | cut -d. -f1)"
 command -v swiftc >/dev/null 2>&1 || arret "il manque le compilateur d'Apple. Lance : xcode-select --install   puis relance ce script."
 CLAUDE="$(command -v claude || true)"
 [ -n "$CLAUDE" ] || [ ! -x "$HOME/.local/bin/claude" ] || CLAUDE="$HOME/.local/bin/claude"
-[ -n "$CLAUDE" ] || arret "il manque Claude Code (la commande claude). Installe-le depuis https://claude.com/product/claude-code puis relance ce script."
+# Sans Claude Code installe a part : la commande claude que l'app Claude de bureau garde pour son onglet Code.
+[ -n "$CLAUDE" ] || CLAUDE="$(ls -t "$HOME/Library/Application Support/Claude/claude-code"/*/*/claude.app/Contents/MacOS/claude 2>/dev/null | head -1 || true)"
+[ -n "$CLAUDE" ] || arret "il manque Claude : installe l'app Claude pour Mac (https://claude.com/download) et ouvre une fois son onglet Code, ou Claude Code (https://claude.com/product/claude-code), puis relance."
 for f in serveur/serveur.py serveur/sites.py serveur/page.js panneau/discussion.py panneau/panneau.html pont/pont-safari.swift pont/construire.sh app/panneau.swift app/construire-app.sh; do
   [ -f "$SOURCE/$f" ] || arret "fichier manquant dans l'archive : $f"
 done
@@ -41,7 +43,7 @@ fi
 # 2. Copie
 mkdir -p "$CIBLE"
 chmod 700 "$CIBLE"
-for d in serveur panneau pont app docs; do
+for d in serveur panneau pont app docs competence; do
   [ -d "$SOURCE/$d" ] || continue
   mkdir -p "$CIBLE/$d"
   rsync -a --delete --exclude 'bin' --exclude '*.app' --exclude '__pycache__' "$SOURCE/$d/" "$CIBLE/$d/"
@@ -72,6 +74,11 @@ fi
 "$CLAUDE" mcp remove --scope user ai-for-safari >/dev/null 2>&1 || true
 "$CLAUDE" mcp add --scope user ai-for-safari -- /usr/bin/python3 "$CIBLE/serveur/serveur.py" >/dev/null
 dire "Connecteur « ai-for-safari » branche dans Claude Code (nouvelles sessions)."
+if [ -f "$CIBLE/competence/ai-for-safari/SKILL.md" ]; then
+  mkdir -p "$HOME/.claude/skills/ai-for-safari"
+  cp "$CIBLE/competence/ai-for-safari/SKILL.md" "$HOME/.claude/skills/ai-for-safari/SKILL.md"
+  dire "Competence « ai-for-safari » posee dans ~/.claude/skills : Claude Code s'en sert des que tu parles de Safari."
+fi
 
 # 5. Ouverture
 open "$CIBLE/app/AI for Safari.app"

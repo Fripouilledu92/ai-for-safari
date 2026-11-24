@@ -153,7 +153,7 @@ class Discussion:
     def commande(self):
         if os.environ.get("CS_PANNEAU_FAUX") == "1":
             return [sys.executable, os.path.join(ICI, "faux_claude.py")]
-        claude = os.environ.get("CS_CLAUDE") or shutil.which("claude") or os.path.expanduser("~/.local/bin/claude")
+        claude = commande_claude() or os.path.expanduser("~/.local/bin/claude")
         env_mcp = {"CLAUDE_SAFARI_MODE": "panneau"}
         if self.onglet:
             env_mcp["CLAUDE_SAFARI_ONGLET"] = self.onglet     # Claude agit dans CET onglet, même si la personne en regarde un autre
@@ -977,7 +977,12 @@ def maison():
 
 def commande_claude():
     c = os.environ.get("CS_CLAUDE") or shutil.which("claude") or os.path.expanduser("~/.local/bin/claude")
-    return c if c and os.path.exists(c) else ""
+    if c and os.path.exists(c):
+        return c
+    # Sans Claude Code installé à part : la commande claude que l'app Claude de bureau garde pour son onglet Code.
+    import glob
+    livrees = glob.glob(os.path.expanduser("~/Library/Application Support/Claude/claude-code/*/*/claude.app/Contents/MacOS/claude"))
+    return max(livrees, key=os.path.getmtime) if livrees else ""
 
 
 def lire_reglages():

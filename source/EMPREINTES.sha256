@@ -1,18 +1,18 @@
 f74cf9f4ca3349633f2cef9718fc6c3a55f530d7cdc5da2c8ebfc1dcf0a09198  ./LICENSE
 42fe44a6a8dee2c1d897ac8afcb49dcd82a15212338787ac406054cff0c6e7ed  ./LISEZ-MOI.md
-b8144c69f953f7f709e0371864171ae2bfed24c7b62b70acb288b59341b4b00c  ./app/.DS_Store
 ee2f2e141d049e9476b72f2e6ae794152dd1c2a013a66bab2c057df7432e04d8  ./app/construire-app.sh
 870c3476d9d87171428617f785009b46fa7788b20dc709442a38d7e9374623b5  ./app/panneau.swift
-eb1a9450802aba5d6e1982c270faf10e83119eb6dc24cf87f7abe27b57233a6e  ./connecteur/ai-for-safari.mcpb
+e4f0472938eb88378afee824e186655205df804dcc909dd3af84ea4a6f3e3a2e  ./competence/ai-for-safari/SKILL.md
+c8b77650b9ad618582e7eb39a7746cfe94008d04a0380b90b4013071cfbc7e10  ./connecteur/ai-for-safari.mcpb
 4a570305a91167b6f7f2ef2253f0f502ba47d3237bb6be35053c705f89049d40  ./distribution/INSTALLER.md
-d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b  ./distribution/installer.sh
+07fddb8273d9fc62d302b504255d37927765eaf31b793c95b070f70e2727bf40  ./distribution/installer.sh
 88366447a0830bcba7e11beeb6ab1aabc4b4ab9797215f866d2f4f093aa736a7  ./docs/PROTOCOLE-PONT.md
-a6912bdb041890307ccd85d4847356fec663cfb97c886046598b6fbb657d2a2f  ./extension/AI for Safari.app/Contents/CodeResources
+1c9bc41b4e998f8e62e7ec0017848970d1c0e0915b97425b1b9ac7999f501d70  ./extension/AI for Safari.app/Contents/CodeResources
 c4502351a5bc0affd70dc44de8bdaa65a804a499fd56ee325d2ded9d671e33f5  ./extension/AI for Safari.app/Contents/Info.plist
-08dbf5e578e448ea4bb0d1086c2fd638e0af0f0ce7b9ba575f218716d4e2176a  ./extension/AI for Safari.app/Contents/MacOS/AI for Safari
+ea305362f30d41c036b0a96df4eb2741e37d7491e9d2519e2240486f7a1270f2  ./extension/AI for Safari.app/Contents/MacOS/AI for Safari
 82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0  ./extension/AI for Safari.app/Contents/PkgInfo
 dbe5d959432cf25e17bca676eb9088712702f09377fd2a3a85ed8411d67c74d1  ./extension/AI for Safari.app/Contents/PlugIns/AI for Safari Extension.appex/Contents/Info.plist
-cfae55ed892202b4c87940186520693337706ab6fe03fc6515e88376905620c0  ./extension/AI for Safari.app/Contents/PlugIns/AI for Safari Extension.appex/Contents/MacOS/AI for Safari Extension
+6d246ce9c6e0080b78d89d016f90bb33ad371dab061cbd9449f272137031a0ef  ./extension/AI for Safari.app/Contents/PlugIns/AI for Safari Extension.appex/Contents/MacOS/AI for Safari Extension
 f2a076206daf32d6b9d60dbdd22d68519b0912c94c8ec1a9d706ced0ee80039c  ./extension/AI for Safari.app/Contents/PlugIns/AI for Safari Extension.appex/Contents/Resources/capteur.js
 34a6a196f12a158584e60f773be2861ed941b1af8658f98b67f116863e139d0b  ./extension/AI for Safari.app/Contents/PlugIns/AI for Safari Extension.appex/Contents/Resources/config.js
 8646fc015d07a130e728aef708476e281f41c9c84fa4d9aecbf734408f5e86a4  ./extension/AI for Safari.app/Contents/PlugIns/AI for Safari Extension.appex/Contents/Resources/fond.js
@@ -33,15 +33,15 @@ b7d3c012678d1ae19019d1f125ef9b6fe3fea9eeeb3f03ccbcb902e2f9c17b9b  ./extension/AI
 f15e69ffeaaa55f279d97b0db5cd70b819330f990515a0b30f12b250bf4c458d  ./extension/AI for Safari.app/Contents/Resources/AppIcon.icns
 62c4ba95892b49e121b5584643bdb6f451b651c248c4a3070422979c8db54651  ./extension/AI for Safari.app/Contents/Resources/Assets.car
 8f1de1d5008cd267823cf1adafc9527617b22c1b1cf0a556bd26a6e9a03f2d41  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.html
-240838400f5d9a4c7f2ba12d83781cb1edce4d04f2a6b775c1cc09d1b9bfcf1f  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/Info.plist
-9709eacb07c27fa1f7b0eaf6da67c8394f9328f67503a528ec4b7ccc8050673a  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/MainMenu.nib
-e1fcc4902fb3182fca5962599b9fa753309dace08624208cdf8d5c5696251286  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/NSWindowController-B8D-0N-5wS.nib
+69f330ddae2682e343d05a7521604c58655924657b6a03c9e56f009be8f2fa0e  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/Info.plist
+422553772f6a4c0cd1ce4739f728b7a772794685cd154bf83959e0d9842771e9  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/MainMenu.nib
+8b9d35b5e1b419b2d6a607cd3029c65c129c22ba390a521b2e8cf330b661e1ed  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/NSWindowController-B8D-0N-5wS.nib
 484fd1515a1045d0da51e8352c4fa15e1cb296fd1f5627c6f015f1f73e8dc082  ./extension/AI for Safari.app/Contents/Resources/Base.lproj/Main.storyboardc/XfG-lQ-9wD-view-m2S-Jp-Qdl.nib
 37df47b62c0753f10f39dc1a0c548c43f0062c2f43670aa0bad868d381774d10  ./extension/AI for Safari.app/Contents/Resources/Icon.png
 68fbf80c14692054264264ccd2ff4d0aa6f5d832359271cbdceac8c8e583a9a9  ./extension/AI for Safari.app/Contents/Resources/Script.js
 abe5a4f4eb550630383e7ef26b02b253e8cf9df95bdc49e3117650fd24df852d  ./extension/AI for Safari.app/Contents/Resources/Style.css
-f8fb2ae78cd60b247039ae8f9cfad375a6ebefa6bea9cd4fff561cf9ff80d6e5  ./extension/AI for Safari.app/Contents/_CodeSignature/CodeResources
-493ef71435a04cf84d64faf37c05f9406184018a38fc57a6aa0a14d3e8d04892  ./panneau/discussion.py
+36f6500a35e89535a4f94e58cbdc18632097d545c090e057d765aa7930f7ff9c  ./extension/AI for Safari.app/Contents/_CodeSignature/CodeResources
+384f0fadc4e0d6690035d7865e20b144198cc3b90fab17e5eb689731ff65d949  ./panneau/discussion.py
 9517f5fd8b2fa777cb28e42f8eca986ecd73172af4d7abfbe15a78fef0c7a8d0  ./panneau/faux_claude.py
 810a2e78f115a97cb5bc9feef2daecc5d7f2d1237fe83b82a951cb947d88a96b  ./panneau/panneau.html
 1f6f20c4f097360809233ece78e4f3502b69a7faccb42bb32ff2b1e256f6e2a9  ./pont/Info-pont.plist

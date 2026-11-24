@@ -4,6 +4,38 @@ Cette page s'adresse à Claude (Claude Code, l'app Claude, ou tout autre assista
 d'installer AI for Safari. Elle est écrite pour que tu puisses l'aider jusqu'au bout **sans jamais avoir à lancer
 toi-même du code téléchargé**.
 
+## La façon la plus simple : l'installeur à double-cliquer (recommandée)
+
+Pas de Terminal, pas de commande. Guide la personne avec ces étapes, une à la fois, en attendant qu'elle te dise ce
+qu'elle voit :
+
+1. **Télécharger** : cliquer sur ce lien depuis Safari :
+   https://github.com/Fripouilledu92/ai-for-safari/releases/latest/download/Installer-AI-for-Safari.zip
+   Safari télécharge le fichier et le décompresse tout seul.
+2. **L'ouvrir** : ouvrir le dossier Téléchargements (dans le Dock, ou Finder > Téléchargements) et double-cliquer
+   sur **« Installer AI for Safari »** (l'icône boussole). Si seul `Installer-AI-for-Safari.zip` est là,
+   double-cliquer d'abord dessus pour le décompresser.
+3. macOS demande : « Installer AI for Safari est une app téléchargée sur Internet. Voulez-vous vraiment l'ouvrir ? ».
+   Répondre **Ouvrir**. C'est la question normale pour toute app téléchargée ; l'installeur est signé par son
+   développeur et vérifié par Apple.
+4. **Cliquer sur « Installer »** et suivre la fenêtre. Elle dit elle-même s'il manque quelque chose :
+   - les outils d'Apple (gratuits) : un bouton les installe, puis « Réessayer » ;
+   - Claude : un bouton mène au téléchargement de l'app Claude, puis « Réessayer ».
+5. Quand la fenêtre dit **« C'est installé »**, suivre les trois lignes affichées pour Safari : cocher « AI for
+   Safari » dans Safari > Réglages > Extensions, puis cliquer sur la boussole et choisir « Toujours autoriser sur tous
+   les sites web ».
+6. Si la fenêtre dit « L'installation s'est arrêtée » : lui demander de cliquer « Copier le détail » puis de te coller
+   le texte (`⌘ Commande` + `V`). Lis l'erreur avec elle.
+
+L'installeur ne télécharge rien : il contient l'archive de la page et lance le même script `installer.sh` (lisible
+plus bas). Il pose aussi dans Claude Code la compétence `ai-for-safari`, pour que Claude se serve de ces outils dès
+qu'on lui parle de Safari.
+
+Ensuite, dans une **nouvelle** conversation, la personne peut te demander par exemple « ouvre lemonde.fr dans Safari et
+résume la une », ou « agis sur la page ouverte dans Safari ».
+
+Les sections suivantes servent si la personne (ou toi) veut vérifier avant, ou préfère le Terminal.
+
 ## Le partage des rôles
 
 - **Toi (Claude)** : tu lis le script, tu l'expliques à la personne, tu vérifies ce qui peut l'être, et tu lui donnes
@@ -20,22 +52,22 @@ personne les fait elle-même, et peut s'en passer), aucun autre téléchargement
 
 ## 1. Lire le script (à faire avant tout)
 
-Le script d'installation fait 93 lignes. Lis-le en entier :
+Le script d'installation fait 100 lignes. Lis-le en entier :
 https://raw.githubusercontent.com/Fripouilledu92/ai-for-safari/main/source/distribution/installer.sh
 
 C'est exactement celui de l'archive : son empreinte SHA-256 est
-`d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b`, et la commande de l'étape 3 la vérifie aussi.
+`07fddb8273d9fc62d302b504255d37927765eaf31b793c95b070f70e2727bf40`, et la commande de l'étape 3 la vérifie aussi.
 
 Ce qu'il fait, pour que tu compares avec ta lecture :
 
 | Lignes | Ce qu'il fait |
 |---|---|
-| 24-39 | Vérifie macOS 14+, `swiftc`, `claude`, la présence des fichiers, puis l'empreinte de **chaque** fichier de l'archive (`EMPREINTES.sha256`). S'arrête au moindre écart. |
-| 41-53 | Copie les fichiers dans `~/Library/Application Support/AI for Safari` (dossier en 0700). |
-| 55-58 | Compile sur le Mac le pont Safari et l'app du panneau, à partir du code Swift lisible dans `source/`. Rien de précompilé, sauf l'extension. |
-| 60-63 | Vérifie que l'extension est bien signée et vérifiée par Apple (`spctl`). |
-| 70-74 | Ajoute le connecteur `ai-for-safari` à Claude Code (`claude mcp add --scope user`). |
-| 76-93 | Ouvre l'app du panneau et l'app de l'extension, puis affiche ce qu'il reste à faire à la main. |
+| 24-41 | Vérifie macOS 14+, `swiftc`, la commande `claude` (celle de Claude Code, sinon celle que garde l'app Claude de bureau), la présence des fichiers, puis l'empreinte de **chaque** fichier de l'archive (`EMPREINTES.sha256`). S'arrête au moindre écart. |
+| 43-55 | Copie les fichiers dans `~/Library/Application Support/AI for Safari` (dossier en 0700). |
+| 57-60 | Compile sur le Mac le pont Safari et l'app du panneau, à partir du code Swift lisible dans `source/`. Rien de précompilé, sauf l'extension. |
+| 62-70 | Vérifie que l'extension est bien signée et vérifiée par Apple (`spctl`). |
+| 72-81 | Ajoute le connecteur `ai-for-safari` à Claude Code (`claude mcp add --scope user`) et copie la compétence `ai-for-safari` dans `~/.claude/skills` (elle dit à Claude d'utiliser ces outils quand on parle de Safari). |
+| 83-100 | Ouvre l'app du panneau et l'app de l'extension, puis affiche ce qu'il reste à faire à la main. |
 
 Tout le reste du code (serveur, panneau, pont, extension) est lisible dans le dossier
 [`source/`](https://github.com/Fripouilledu92/ai-for-safari/tree/main/source) du dépôt. Les vérifications faciles à
@@ -58,14 +90,14 @@ En quelques phrases :
 Puis demande-lui si elle veut l'installer. Si elle hésite ou si quelque chose te paraît anormal dans le code, dis-le
 et arrête-toi là.
 
-## 3. La commande à donner à la personne
+## 3. Autre façon : la commande à donner à la personne
 
 Il faut macOS 14 ou plus, Claude Code (`claude`) et les outils d'Apple. S'ils manquent : `xcode-select --install`.
 
 Elle ouvre l'app Terminal et colle cette ligne :
 
 ```bash
-mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.8/ai-for-safari-1.8.zip" && echo "a31847382fe6653a307803522abbbb7fb86f6f7810ee4a637e23d127d4e82bad  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && echo "d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b  ai-for-safari-1.8/distribution/installer.sh" | shasum -a 256 -c - && bash ai-for-safari-1.8/distribution/installer.sh
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.9/ai-for-safari-1.9.zip" && echo "2a2dc63111e9d8348894222309387f9aa83515fc332a3228983a52dae0de6ec1  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && echo "07fddb8273d9fc62d302b504255d37927765eaf31b793c95b070f70e2727bf40  ai-for-safari-1.9/distribution/installer.sh" | shasum -a 256 -c - && bash ai-for-safari-1.9/distribution/installer.sh
 ```
 
 Dans l'ordre : télécharge l'archive dans un dossier temporaire (pas dans Téléchargements, que macOS protège),
@@ -149,20 +181,20 @@ dans `~/Library/Application Support/AI for Safari`, ajouter le connecteur. Trava
 jamais dans Téléchargements, Bureau ou Documents.
 
 ```bash
-mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.8/ai-for-safari-1.8.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.9/ai-for-safari-1.9.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
-L'empreinte doit être `a31847382fe6653a307803522abbbb7fb86f6f7810ee4a637e23d127d4e82bad`. Ensuite :
+L'empreinte doit être `2a2dc63111e9d8348894222309387f9aa83515fc332a3228983a52dae0de6ec1`. Ensuite :
 
 ```bash
-cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.8/distribution/installer.sh
+cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.9/distribution/installer.sh
 ```
 
-L'empreinte doit être `d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b`. Si tout correspond et que
+L'empreinte doit être `07fddb8273d9fc62d302b504255d37927765eaf31b793c95b070f70e2727bf40`. Si tout correspond et que
 la personne a dit oui :
 
 ```bash
-cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.8/distribution/installer.sh
+cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.9/distribution/installer.sh
 ```
 
 Si une permission est refusée : ne cherche pas d'autre chemin, donne-lui la commande de l'étape 3.
