@@ -1,7 +1,7 @@
 {
   "name": "ai-for-safari",
   "displayName": "AI for Safari",
-  "version": "1.9.0",
+  "version": "1.11.0",
   "description": "Lets Claude read and act in Safari on your Mac: open tabs, read pages, click, type, take screenshots, listen to page audio. Works with the free AI for Safari app and Safari extension installed on the same Mac. Nothing is sent anywhere except through Claude itself.",
   "author": {
     "name": "AI for Safari",

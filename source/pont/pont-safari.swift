@@ -371,6 +371,8 @@ protocol Backend {
     func ongletFermer(_ fen: Int, _ idx: Int, _ rep: @escaping Rep)
     func ongletUrl(_ fen: Int, _ idx: Int, _ url: String, _ rep: @escaping Rep)
     func ongletCourant(_ fen: Int, _ idx: Int, _ rep: @escaping Rep)
+    func fenetreAvant(_ fen: Int, _ rep: @escaping Rep)
+    func fenetreFermer(_ fen: Int, _ rep: @escaping Rep)
     func js(_ fen: Int, _ idx: Int, _ code: String, _ delai: Double, _ rep: @escaping Rep)
     func devant(_ rep: @escaping Rep)
     func bornes(_ fen: Int, _ rep: @escaping Rep)
@@ -450,8 +452,11 @@ final class Banc: Backend {
             win.isReleasedWhenClosed = false
             let f = BancFenetre(id: prochain, win: win)
             prochain += 1
-            f.vues = [try nouvelleVue(f, url)]
-            f.courant = 0
+            // Essais : PONT_BANC_EPINGLES=n imite n onglets épinglés, que Safari met en tête de chaque nouvelle fenêtre
+            let epingles = Int(ProcessInfo.processInfo.environment["PONT_BANC_EPINGLES"] ?? "") ?? 0
+            for _ in 0..<max(0, epingles) { f.vues.append(try nouvelleVue(f, "about:blank#epingle")) }
+            f.vues.append(try nouvelleVue(f, url))
+            f.courant = f.vues.count - 1
             fenetres[f.id] = f
             montrer(f)
             return ["fenetre": f.id]
@@ -508,6 +513,17 @@ final class Banc: Backend {
             _ = try vue(f, idx)
             f.courant = idx - 1
             montrer(f)
+            return [:]
+        }
+    }
+    func fenetreAvant(_ id: Int, _ rep: @escaping Rep) {
+        essayer(rep) { _ = try fen(id); return [:] }
+    }
+    func fenetreFermer(_ id: Int, _ rep: @escaping Rep) {
+        essayer(rep) {
+            let f = try fen(id)
+            f.win.orderOut(nil)
+            fenetres[id] = nil
             return [:]
         }
     }
@@ -690,6 +706,20 @@ on onglet_courant(w, i)
 	return "ok"
 end onglet_courant
 
+on fenetre_avant(w)
+	-- Montre la fenêtre de Claude : devant les autres fenêtres de Safari, et Safari devant les autres apps.
+	tell application "Safari"
+		set index of window id w to 1
+		activate
+	end tell
+	return "ok"
+end fenetre_avant
+
+on fenetre_fermer(w)
+	tell application "Safari" to close window id w
+	return "ok"
+end fenetre_fermer
+
 on js(w, i, lecode, d)
 	-- Un seul événement Apple quand tout va bien ; on ne cherche la cause qu'en cas d'erreur.
 	try
@@ -840,6 +870,12 @@ final class Safari: Backend {
     }
     func ongletCourant(_ fen: Int, _ idx: Int, _ rep: @escaping Rep) {
         simple("onglet_courant", [NSAppleEventDescriptor(int32: Int32(fen)), NSAppleEventDescriptor(int32: Int32(idx))], rep)
+    }
+    func fenetreAvant(_ fen: Int, _ rep: @escaping Rep) {
+        simple("fenetre_avant", [NSAppleEventDescriptor(int32: Int32(fen))], rep)
+    }
+    func fenetreFermer(_ fen: Int, _ rep: @escaping Rep) {
+        simple("fenetre_fermer", [NSAppleEventDescriptor(int32: Int32(fen))], rep)
     }
     func js(_ fen: Int, _ idx: Int, _ code: String, _ delai: Double, _ rep: @escaping Rep) {
         simple("js", [NSAppleEventDescriptor(int32: Int32(fen)), NSAppleEventDescriptor(int32: Int32(idx)),
@@ -1634,6 +1670,12 @@ func traiter(_ b: Backend, _ q: [String: Any], _ rep: @escaping Rep) {
         guard let f = entier(q, "fenetre") else { rep(.ko("ARGUMENT", ex("fenetre"))); return }
         guard let i = entier(q, "index") else { rep(.ko("ARGUMENT", ex("index"))); return }
         b.ongletCourant(f, i, rep)
+    case "fenetre_avant":
+        guard let f = entier(q, "fenetre") else { rep(.ko("ARGUMENT", ex("fenetre"))); return }
+        b.fenetreAvant(f, rep)
+    case "fenetre_fermer":
+        guard let f = entier(q, "fenetre") else { rep(.ko("ARGUMENT", ex("fenetre"))); return }
+        b.fenetreFermer(f, rep)
     case "js":
         guard let f = entier(q, "fenetre") else { rep(.ko("ARGUMENT", ex("fenetre"))); return }
         guard let i = entier(q, "index") else { rep(.ko("ARGUMENT", ex("index"))); return }

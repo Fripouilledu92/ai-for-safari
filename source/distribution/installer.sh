@@ -80,9 +80,13 @@ if [ -f "$CIBLE/competence/ai-for-safari/SKILL.md" ]; then
   dire "Competence « ai-for-safari » posee dans ~/.claude/skills : Claude Code s'en sert des que tu parles de Safari."
 fi
 
-# 5. Ouverture
+# 5. Ouverture. L'extension remplacee doit etre reenregistree aupres de macOS, sinon Safari la perd apres une mise a jour.
 open "$CIBLE/app/AI for Safari.app"
-[ -d "$EXT" ] && open "$EXT"
+if [ -d "$EXT" ]; then
+  /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$EXT" >/dev/null 2>&1 || true
+  for appex in "$EXT"/Contents/PlugIns/*.appex; do pluginkit -a "$appex" >/dev/null 2>&1 || true; done
+  open "$EXT"
+fi
 
 dire ""
 dire "Installe. Dans Safari, une seule fois :"

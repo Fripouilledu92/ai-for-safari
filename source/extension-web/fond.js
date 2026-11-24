@@ -50,12 +50,27 @@ if (api.tabs && api.tabs.onRemoved) api.tabs.onRemoved.addListener(function (tab
 // personne l'a reliée (fenêtre de macOS avec un code). Elle n'est donnée qu'au panneau que NOTRE script a ouvert dans
 // l'onglet : il présente un numéro à usage unique, déposé juste avant par le script de la page (cadre principal).
 // Une page qui chargerait panneau.html dans son propre cadre n'a pas ce numéro et n'obtient rien.
-function cleExtension() {
+function cleLocale() {
   return lire({ cle: "" }).then(function (r) {
     if (r.cle && r.cle.length >= 32) return r.cle;
     var o = new Uint8Array(32); crypto.getRandomValues(o);
     var c = Array.prototype.map.call(o, function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
     return api.storage.local.set({ cle: c }).then(function () { return c; });
+  });
+}
+// La clé vit dans la partie native de l'extension (son dossier sur le Mac) : Safari efface la mémoire de l'extension à
+// chaque mise à jour, pas ce dossier. Sans partie native (vieux Safari), la mémoire de l'extension sert de repli.
+function cleExtension() {
+  return cleLocale().then(function (locale) {
+    var natif;
+    try { natif = api.runtime.sendNativeMessage("application.id", { demande: "cle", proposee: locale }); } catch (e) { natif = null; }
+    if (!natif || typeof natif.then !== "function") return locale;
+    return natif.then(function (r) {
+      var c = r && r.cle;
+      if (typeof c !== "string" || !/^[0-9a-f]{64}$/.test(c)) return locale;
+      if (c === locale) return c;
+      return api.storage.local.set({ cle: c }).then(function () { return c; });
+    }, function () { return locale; });
   });
 }
 var suites = {};         // numéro d'onglet -> jeton du panneau qui vient de recevoir la clé

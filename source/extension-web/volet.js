@@ -257,6 +257,16 @@
   if (!monOnglet) { monOnglet = Date.now().toString(36) + Math.random().toString(36).slice(2, 8); try { sessionStorage.setItem("__cs_onglet", monOnglet); } catch (e) {} }
   document.documentElement.setAttribute("data-cs-onglet", monOnglet);
 
+  // Claude (Claude Code ou l'app Claude) agit dans cet onglet : son serveur le signale ici, et le panneau s'ouvre sur la
+  // même conversation (le serveur l'a déjà reliée au programme local ; la page ne choisit rien, elle ne fait que l'ouvrir).
+  var demandeVue = document.documentElement.getAttribute("data-cs-demande-panneau") || "";
+  try {
+    new MutationObserver(function () {
+      var v = document.documentElement.getAttribute("data-cs-demande-panneau") || "";
+      if (v && v !== demandeVue) { demandeVue = v; demander({ claudeSafari: "ouvrir" }); }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-cs-demande-panneau"] });
+  } catch (e) {}
+
   // Raccourci de secours dans la page : ⌥⇧C ouvre ou ferme le panneau (si le bouton de la barre ne répond pas).
   window.addEventListener("keydown", function (e) {
     if (e.isTrusted && e.altKey && e.shiftKey && !e.metaKey && !e.ctrlKey && e.code === "KeyC") {

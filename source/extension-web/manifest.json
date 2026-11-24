@@ -5,7 +5,8 @@
   "description": "Un panneau pour parler à AI for Safari, avec ton propre abonnement. Projet indépendant, sans lien avec Anthropic ni Apple.",
   "permissions": [
     "storage",
-    "contextMenus"
+    "contextMenus",
+    "nativeMessaging"
   ],
   "host_permissions": [
     "http://127.0.0.1/*"

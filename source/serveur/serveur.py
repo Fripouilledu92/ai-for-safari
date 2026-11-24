@@ -119,6 +119,26 @@ def traduire(code, texte):
     return texte or code or "erreur inconnue"
 
 
+# ----------------------------------------------------------------------------- conversation appelante
+_conversation = []
+
+
+def conversation_appelante():
+    """La conversation Claude qui a lancé ce serveur : l'app Claude lance `claude --resume=<id>` (ou --session-id),
+    et ce serveur est son enfant. Rend l'identifiant, ou None."""
+    if not _conversation:
+        ident = None
+        try:
+            ligne = subprocess.run(["/bin/ps", "-o", "command=", "-p", str(os.getppid())], stdout=subprocess.PIPE,
+                                   stderr=subprocess.DEVNULL, timeout=3).stdout.decode("utf-8", "replace")
+            m = re.search(r"--(?:resume|session-id)[= ]([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", ligne)
+            ident = m.group(1) if m else None
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        _conversation.append(os.environ.get("CLAUDE_SAFARI_CONVERSATION") or ident)
+    return _conversation[0]
+
+
 # ----------------------------------------------------------------------------- état
 class Onglet:
     def __init__(self, ident):
@@ -135,6 +155,8 @@ class Safari:
     def __init__(self):
         self.pont = Pont(os.environ.get("CLAUDE_SAFARI_PONT", "safari"))
         self.panneau = os.environ.get("CLAUDE_SAFARI_MODE") == "panneau"
+        self.lies = set()            # onglets où le panneau a été ouvert sur la conversation de Claude Code
+        self.epingles = 0            # onglets épinglés de la personne que Safari met en tête de la fenêtre de Claude : pas à Claude
         self.attache = False         # la personne a confié à Claude l'onglet qu'il regardait (tabs_attach_mcp)
         self.fenetre = None
         self.onglets = []            # dans l'ordre de la barre d'onglets
@@ -163,10 +185,12 @@ class Safari:
             r = self.pont("onglets", fenetre=self.fenetre, leger=leger)
         except Erreur as e:
             if e.code in ("FENETRE_INTROUVABLE", "ONGLET_INTROUVABLE"):
-                self.fenetre, self.onglets, self.courant = None, [], None
+                self.fenetre, self.onglets, self.courant, self.epingles = None, [], None, 0
                 return []
             raise
         vus = r["onglets"]
+        if not self.panneau:
+            vus = vus[self.epingles:]
         if self.panneau and len(vus) != len(self.onglets):
             self.onglets = self.rapprocher(vus)
         elif len(vus) != len(self.onglets):
@@ -195,6 +219,51 @@ class Safari:
             self.courant = r.get("courant")
         return self.onglets
 
+    def decalage(self):
+        """Index réel dans la fenêtre = place dans self.onglets + 1 + onglets épinglés (fenêtre de Claude seulement)."""
+        return 0 if self.panneau else self.epingles
+
+    def lier_panneau(self, idx, o):
+        """Claude Code (ou l'app Claude) agit dans cet onglet : le panneau AI for Safari s'y ouvre, sur la même
+        conversation, pour qu'la personne continue à lui parler depuis Safari. Une fois par onglet. Sans conversation
+        connue (Claude lancé sans identifiant) ou sans extension dans la page, rien ne se passe."""
+        if (self.panneau and not self.attache) or o.id in self.lies:
+            return
+        session = conversation_appelante()
+        if not session:
+            return
+        try:
+            marque = self.js(idx, "document.documentElement.getAttribute('data-cs-onglet')||''", 5)
+        except Erreur:
+            return
+        if not marque or not re.fullmatch(r"[a-z0-9]{6,40}", str(marque)):
+            return
+        try:
+            with open(os.path.join(sites.maison(), "jeton-local"), encoding="utf-8") as f:
+                acces = json.load(f)
+            import urllib.parse
+            import urllib.request
+            adresse = "http://127.0.0.1:%d/lier?%s" % (int(acces["port"]), urllib.parse.urlencode({"jeton": acces["jeton"], "onglet": marque}))
+            req = urllib.request.Request(adresse, data=json.dumps({"session": session}).encode("utf-8"),
+                                         headers={"Content-Type": "application/json"}, method="POST")
+            urllib.request.urlopen(req, timeout=5).read()
+        except Exception:
+            return                       # app du panneau fermée, ou ancienne version : Claude agit quand même
+        self.lies.add(o.id)
+        try:
+            self.page(idx, o, "ouvrirPanneau")
+        except Erreur:
+            pass
+
+    def montrer(self):
+        """Fait passer la fenêtre de Claude devant (pas en mode panneau : là, c'est la personne qui regarde déjà sa page)."""
+        if self.fenetre is None or (self.panneau and not self.attache):
+            return
+        try:
+            self.pont("fenetre_avant", fenetre=self.fenetre)
+        except Erreur:
+            pass
+
     def nouvel_onglet(self, a_claude=True):
         o = Onglet(self.prochain)
         self.prochain += 1
@@ -222,11 +291,11 @@ class Safari:
         for i, o in enumerate(self.onglets):
             if o.id == int(tab_id) and o.confie:
                 if o.arrete and self.reprise_demandee(o):
-                    self.relancer(i + 1, o)
+                    self.relancer(i + 1 + self.decalage(), o)
                 if o.arrete:
                     raise Erreur("la personne a cliqué sur « Arrêter » dans cet onglet. Claude n'y touche plus. Arrête-toi, dis-le-lui en une phrase et attends "
                                  "son prochain message" + (" : il te rendra la main en t'écrivant." if self.panneau else "."), "ARRETE")
-                return i + 1, o
+                return i + 1 + self.decalage(), o
         if self.panneau:
             raise Erreur("L'onglet %s n'est pas confié à Claude (ou il a été fermé, ou la personne a changé d'onglet). Claude n'agit que dans "
                          "l'onglet qu'la personne regarde quand il lui écrit, et dans ceux qu'il ouvre lui-même. Appelle tabs_context_mcp." % tab_id, "ONGLET_INTROUVABLE")
@@ -260,8 +329,10 @@ class Safari:
         self.synchroniser()
         if not self.onglets and creer:
             self.fenetre = self.pont("fenetre_creer", url=ACCUEIL)["fenetre"]
+            # Safari ouvre la nouvelle fenêtre avec les onglets épinglés de la personne en tête : seul le dernier est à Claude
+            self.epingles = max(0, len(self.pont("onglets", fenetre=self.fenetre, leger=True)["onglets"]) - 1)
             self.onglets = [self.nouvel_onglet()]
-            self.premier_chargement(1, self.onglets[0])
+            self.premier_chargement(1 + self.epingles, self.onglets[0])
             self.synchroniser()
         return self.onglets
 
@@ -388,7 +459,7 @@ class Safari:
         self.pont("onglet_creer", fenetre=self.fenetre, url=url)
         o = self.nouvel_onglet()
         self.onglets.append(o)
-        self.premier_chargement(len(self.onglets), o)
+        self.premier_chargement(len(self.onglets) + self.epingles, o)
         self.synchroniser()
         return o
 
@@ -629,6 +700,10 @@ class Outils:
 
     def tabs_attach_mcp(self, a):
         o = self.s.attacher()
+        try:
+            self.s.lier_panneau(*self.s.index(o.id))
+        except Erreur:
+            pass
         return [texte("la personne t'a confié son onglet : tabId %d, « %s », %s. Agis-y avec ce tabId (get_page_text, find, computer…) ; "
                       "il te voit faire en direct. N'agis dans aucun de ses autres onglets. S'il clique sur « Arrêter », arrête-toi."
                       % (o.id, o.titre, o.url))]
@@ -641,11 +716,24 @@ class Outils:
         idx, o = self.s.index(a.get("tabId")) if not self._arrete(a) else self._index_brut(a)
         if not o.cree:
             raise Erreur("Cet onglet est à la personne (il te l'a confié depuis le panneau) : Claude ne le ferme pas. Il ne ferme que les onglets qu'il a ouverts.", "PAS_A_CLAUDE")
+        if not self.s.panneau and self.s.epingles and len(self.s.onglets) == 1:
+            # son dernier onglet, dans une fenêtre où Safari a mis les onglets épinglés de la personne : fermer l'onglet ferait
+            # ouvrir à Safari un onglet vide ; on ferme la fenêtre de Claude (les onglets épinglés restent chez la personne)
+            self.s.pont("fenetre_fermer", fenetre=self.s.fenetre)
+            self.s.fenetre, self.s.onglets, self.s.courant, self.s.epingles, self.s.calibrage = None, [], None, 0, {}
+            return [texte("Onglet %d fermé. Onglets restants : aucun (la fenêtre de Claude est fermée)" % o.id)]
         self.s.pont("onglet_fermer", fenetre=self.s.fenetre, index=idx)
         self.s.onglets = [x for x in self.s.onglets if x.id != o.id]
         self.s.calibrage = {}
         time.sleep(0.05)
         reste = self.s.synchroniser()
+        if not reste and not self.s.panneau and self.s.epingles and self.s.fenetre is not None:
+            # il ne reste que les onglets épinglés de la personne, que Safari a mis dans la fenêtre de Claude : on la ferme
+            try:
+                self.s.pont("fenetre_fermer", fenetre=self.s.fenetre)
+            except Erreur:
+                pass
+            self.s.fenetre, self.s.onglets, self.s.courant, self.s.epingles = None, [], None, 0
         return [texte("Onglet %d fermé. Onglets restants : %s" % (o.id, ", ".join(str(x.id) for x in reste) or "aucun (la fenêtre de Claude est fermée)"))]
 
     def _arrete(self, a):
@@ -655,7 +743,7 @@ class Outils:
         self.s.synchroniser()
         for i, o in enumerate(self.s.onglets):
             if o.id == a.get("tabId"):
-                return i + 1, o
+                return i + 1 + self.s.decalage(), o
         raise Erreur("Onglet introuvable.", "ONGLET_INTROUVABLE")
 
     def navigate(self, a):
@@ -690,6 +778,7 @@ class Outils:
             self.s.page(idx, o, "voyant")
         except Erreur:
             pass
+        self.s.lier_panneau(idx, o)
         self.s.image_gif(idx, o, [{"type": "texte", "texte": "Ouvre " + sites.hote(o.url)}])
         return [texte(prefixe + "Page ouverte : %s\nTitre : %s%s" % (o.url, o.titre, "" if fini else "\n(La page charge encore.)"))]
 
@@ -1299,5 +1388,17 @@ def main():
         safari.pont.fermer()
 
 
+def relayer():
+    """Les copies que l'app Claude (connecteur .mcpb) et Claude Code (plugin) gardent pour elles ne se mettent pas à jour
+    seules : elles passent la main au serveur que l'installeur a posé sur ce Mac, toujours le plus récent."""
+    ici = os.path.realpath(__file__)
+    if "/Claude Extensions/" not in ici and "/.claude/plugins/" not in ici:
+        return
+    installe = os.path.expanduser("~/Library/Application Support/AI for Safari/serveur/serveur.py")
+    if os.path.isfile(installe) and os.path.realpath(installe) != ici:
+        os.execv(sys.executable, [sys.executable, installe] + sys.argv[1:])
+
+
 if __name__ == "__main__":
+    relayer()
     main()

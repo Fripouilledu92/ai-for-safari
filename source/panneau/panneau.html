@@ -694,6 +694,7 @@
         } break;
       case "erreur": ajouter(bloc("note rouge", e.texte)); break;
       case "arrete": ajouter(bloc("note", "Arrêté.")); break;
+      case "note": finGroupe(); ajouter(bloc("note", e.texte)); break;
       case "fin":
         if (rendu) { cancelAnimationFrame(rendu); rendu = 0; }
         if (bulle) peindre(bulle, brut);

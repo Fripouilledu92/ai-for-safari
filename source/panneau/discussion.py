@@ -12,6 +12,7 @@ Première ligne écrite : {"url": "http://127.0.0.1:PORT/?jeton=…"}
 Variables : CS_CLAUDE (chemin de la commande claude), CS_PANNEAU_PONT=banc (essais sans Safari),
 CS_PANNEAU_FAUX=1 (essais : un faux Claude qui répond tout seul, sans dépenser de forfait).
 """
+import glob
 import hashlib
 import hmac
 import http.server
@@ -136,6 +137,9 @@ class Discussion:
                 self.connecteurs = [c for c in d["connecteurs"] if isinstance(c, str)]
         except (OSError, ValueError):
             pass
+        self.cwd = None               # dossier de la conversation Claude Code reprise (sinon ~/.claude-safari/panneau)
+        self.fourche = False          # reprendre une conversation Claude Code en branche (--fork-session), sans écrire dedans
+        self.lien = None              # conversation Claude Code reliée à ce panneau
         self.ident = None             # identifiant de la discussion dans l'historique
         self.titre = ""
         self.occupe = False
@@ -180,6 +184,8 @@ class Discussion:
             cmd += ["--setting-sources", "project,local"]     # sans les consignes ni la mémoire de la personne
         if self.session:
             cmd += ["--resume", self.session]
+            if self.fourche:
+                cmd += ["--fork-session"]
         return cmd
 
     def lancer(self):
@@ -192,7 +198,8 @@ class Discussion:
         env = dict(os.environ)
         env["PATH"] = os.path.expanduser("~/.local/bin") + ":/usr/local/bin:/opt/homebrew/bin:" + env.get("PATH", "/usr/bin:/bin")
         try:
-            self.proc = subprocess.Popen(self.commande(), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=dossier, env=env)
+            cwd = self.cwd if self.cwd and os.path.isdir(self.cwd) else dossier
+            self.proc = subprocess.Popen(self.commande(), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd, env=env)
         except OSError as e:
             self.proc = None
             raise RuntimeError("La commande claude est introuvable (%s). Installe Claude Code, ou donne son chemin dans CS_CLAUDE." % e)
@@ -223,7 +230,10 @@ class Discussion:
     def traiter(self, m):
         t = m.get("type")
         if t == "system" and m.get("subtype") == "init":
-            self.session = m.get("session_id") or self.session
+            nouvelle = m.get("session_id")
+            if nouvelle and nouvelle != self.session:
+                self.fourche = False          # la branche existe : on la poursuit, sans refaire de branche
+            self.session = nouvelle or self.session
             self.emettre(type="pret")
         elif t == "stream_event":
             if m.get("parent_tool_use_id"):
@@ -395,6 +405,49 @@ class Discussion:
             self.voix_evts = (getattr(self, "voix_evts", []) + [e])[-50:]
             self.voix_n = getattr(self, "voix_n", 0) + 1
             self.attente.notify_all()
+
+    def lier(self, session):
+        """Claude Code agit dans cet onglet : le panneau reprend SA conversation (en branche : la conversation d'origine
+        n'est pas modifiée), montre ses derniers messages, et la personne peut continuer à lui parler depuis Safari."""
+        if self.lien == session:
+            return
+        chemins = glob.glob(os.path.join(os.path.expanduser("~/.claude/projects"), "*", session + ".jsonl"))
+        if not chemins:
+            raise RuntimeError("Conversation Claude introuvable.")
+        cwd, messages = None, []
+        try:
+            with open(chemins[0], encoding="utf-8") as f:
+                for ligne in f:
+                    try:
+                        m = json.loads(ligne)
+                    except ValueError:
+                        continue
+                    cwd = cwd or m.get("cwd")
+                    if m.get("type") not in ("user", "assistant") or m.get("isSidechain") or m.get("isMeta"):
+                        continue
+                    contenu = (m.get("message") or {}).get("content")
+                    if isinstance(contenu, list):
+                        contenu = "\n".join(b.get("text", "") for b in contenu if isinstance(b, dict) and b.get("type") == "text")
+                    contenu = (contenu or "").strip()
+                    if not contenu or contenu.startswith("<"):
+                        continue
+                    messages.append((m["type"], contenu[:1500]))
+        except OSError:
+            raise RuntimeError("Conversation Claude illisible.")
+        self.arreter(dire=False)
+        self.ident, self.titre = None, "Suite de ta conversation avec Claude"
+        self.session, self.cwd, self.fourche, self.lien = session, cwd, True, session
+        self.vider()
+        self.emettre(type="note", texte="Claude agit dans cet onglet. C'est la même conversation que dans l'app Claude : "
+                                        "tu peux lui écrire ici.")
+        for qui, texte in messages[-6:]:
+            if qui == "user":
+                self.emettre(type="moi", texte=texte, images=0)
+            else:
+                self.emettre(type="texte_debut")
+                self.emettre(type="texte", t=texte)
+                self.emettre(type="fin")
+        self.chauffer()
 
     def vider(self):
         with self.attente:
@@ -757,6 +810,7 @@ class Page(http.server.BaseHTTPRequestHandler):
             # L'origine seule ne prouve rien (un programme local peut l'écrire, une autre extension a la sienne) :
             # l'extension présente sa clé, que la personne a reliée une fois à cette app.
             cle = (q.get("cle") or [""])[0]
+            self.cle_courte = empreinte(cle)[:8] if cle else ""     # pour le journal : jamais la clé elle-même
             self.appairage = appairage(cle)
             self.code = code_appairage(cle)
             bon = self.appairage == "oui"
@@ -778,8 +832,9 @@ class Page(http.server.BaseHTTPRequestHandler):
             if os.path.exists(chemin) and os.path.getsize(chemin) > 200000:
                 os.remove(chemin)
             with open(chemin, "a", encoding="utf-8") as f:
-                f.write("%s %s %s %s origine=%r hote=%r\n" % (time.strftime("%H:%M:%S"), quoi, self.command, self.path.split("?")[0],
-                                                               self.headers.get("Origin"), self.headers.get("Host")))
+                f.write("%s %s %s %s origine=%r hote=%r cle=%s\n" % (time.strftime("%H:%M:%S"), quoi, self.command, self.path.split("?")[0],
+                                                                      self.headers.get("Origin"), self.headers.get("Host"),
+                                                                      getattr(self, "cle_courte", "")))
         except OSError:
             pass
 
@@ -940,6 +995,15 @@ class Page(http.server.BaseHTTPRequestHandler):
                 # Ouvre le bon écran des Réglages Système (adresse fixe, rien ne vient de la page).
                 volet = {"son": "Privacy_ScreenCapture", "voix": "Privacy_SpeechRecognition", "safari": "Privacy_Automation"}.get(corps.get("volet"), "Privacy_ScreenCapture")
                 subprocess.Popen(["/usr/bin/open", "x-apple.systempreferences:com.apple.preference.security?" + volet])
+            elif u.path == "/lier":
+                # Le serveur MCP (lancé par Claude Code) relie le panneau de cet onglet à sa conversation. Seul le jeton
+                # local le permet : ni une page web ni l'extension ne peuvent choisir la conversation.
+                if self.extension():
+                    return self.rendre(403, {"erreur": "réservé"})
+                session = str(corps.get("session") or "")
+                if not re.fullmatch(r"[0-9a-fA-F-]{36}", session):
+                    return self.rendre(400, {"erreur": "conversation invalide"})
+                D.lier(session)
             elif u.path == "/connexion":
                 ouvrir_connexion()
             elif u.path == "/accord":
@@ -1124,6 +1188,14 @@ def ouvrir_connexion():
     _compte["v"] = None
 
 
+def poser_jeton_local(port):
+    """Le jeton et le port de cette app, lisibles par le seul compte de la personne : le serveur MCP s'en sert pour /lier."""
+    chemin = os.path.join(maison(), "jeton-local")
+    fd = os.open(chemin, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        json.dump({"jeton": JETON, "port": port}, f)
+
+
 def fermer_dossier():
     """Les discussions, le son transcrit et les réglages ne sont lisibles que par la personne (0700 / 0600)."""
     os.umask(0o077)
@@ -1148,6 +1220,10 @@ def main():
     except OSError:
         srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Page)
     srv.daemon_threads = True
+    try:
+        poser_jeton_local(srv.server_address[1])
+    except OSError:
+        pass
     sys.stdout.write(json.dumps({"url": "http://127.0.0.1:%d/?jeton=%s" % (srv.server_address[1], JETON)}) + "\n")
     sys.stdout.flush()
 
