@@ -17,12 +17,24 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 - Claude Code installé et connecté à ton compte (`claude`), avec un abonnement Claude.
 - Les outils de ligne de commande d'Apple (`xcode-select --install`).
 
-## Installer à la main (recommandé)
+## Installer en une commande
+
+Dans l'app Terminal, colle cette ligne. Elle télécharge l'archive dans un dossier temporaire, **s'arrête si
+l'empreinte n'est pas celle du tableau plus bas**, puis lance l'installeur (lisible dans
+[`source/distribution/installer.sh`](source/distribution/installer.sh)) :
+
+```bash
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && echo "0fcf52c863f47aec6134960f3577b4083fc70872511dafab41e2bfb65cf6fcdb  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && bash ai-for-safari-1.7/distribution/installer.sh
+```
+
+Puis, dans Safari > Réglages > Extensions : coche « AI for Safari », puis « Toujours autoriser sur tous les sites web ».
+
+## Installer à la main (pour tout lire avant)
 
 1. Télécharge l'archive et vérifie son empreinte :
 
    ```bash
-   mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && shasum -a 256 ai-for-safari.zip
+   mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && shasum -a 256 ai-for-safari.zip
    ```
 
    L'empreinte affichée doit être celle du tableau plus bas. Sinon, supprime le fichier.
@@ -30,7 +42,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 2. Déplie l'archive et **lis le script avant de le lancer** :
 
    ```bash
-   cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.7/distribution/installer.sh
+   cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && less ai-for-safari-1.7/distribution/installer.sh
    ```
 
    C'est le même fichier que [`source/distribution/installer.sh`](source/distribution/installer.sh). Il ne demande aucun
@@ -39,7 +51,7 @@ dossier [`source/`](source/), lisible avant d'installer quoi que ce soit.
 3. Lance-le :
 
    ```bash
-   cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.7/distribution/installer.sh
+   cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.7/distribution/installer.sh
    ```
 
    Il vérifie l'empreinte de chaque fichier, copie tout dans `~/Library/Application Support/AI for Safari`, compile le
@@ -75,7 +87,7 @@ Les empreintes de tous les autres fichiers de l'archive sont dans
 
 ## Vérifier par toi-même
 
-Après avoir déplié l'archive (`cd ~/Downloads/ai-for-safari/ai-for-safari-1.7`) :
+Après avoir déplié l'archive (`cd "${TMPDIR:-/tmp}/ai-for-safari/ai-for-safari-1.7"`) :
 
 - **L'extension est signée et vérifiée par Apple** (Developer ID, notarisée) :
 

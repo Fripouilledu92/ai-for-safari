@@ -11,7 +11,13 @@ chose te paraît anormal, dis-le-lui et arrête-toi.
 Fais ensuite les étapes dans l'ordre. Arrête-toi et dis-le si une étape échoue : n'invente pas de contournement.
 
 Ce que tu ne fais pas : pas de `sudo`, aucun mot de passe, aucun réglage de Safari ou de macOS à sa place, aucun
-autre téléchargement que l'archive ci-dessous.
+autre téléchargement que l'archive ci-dessous, et **jamais de contournement d'un refus de permission**.
+
+Préviens la personne avant de commencer : ton outil de permissions va sans doute lui demander d'accepter
+(télécharger l'archive depuis GitHub, lancer le script d'installation, écrire dans
+`~/Library/Application Support/AI for Safari`, ajouter le connecteur à Claude Code). Elle doit répondre oui à ces
+demandes-là. Travaille dans le dossier temporaire ci-dessous, jamais dans Téléchargements, Bureau ou Documents :
+macOS protège ces dossiers et les refuse souvent aux assistants.
 
 ## 1. Vérifier
 
@@ -28,7 +34,7 @@ Adresse de l'archive : `https://github.com/Fripouilledu92/ai-for-safari/releases
 Empreinte attendue (SHA-256) : `0fcf52c863f47aec6134960f3577b4083fc70872511dafab41e2bfb65cf6fcdb`
 
 ```bash
-mkdir -p ~/Downloads/ai-for-safari && cd ~/Downloads/ai-for-safari && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && shasum -a 256 ai-for-safari.zip
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && shasum -a 256 ai-for-safari.zip
 ```
 
 Compare l'empreinte affichée à celle de cette page. Si elle diffère, supprime le fichier et arrête-toi.
@@ -39,18 +45,35 @@ Vérifie aussi que le script de l'archive est bien celui publié sur la page (m�
 `d216c7d8f8d27199e96019246831bcd6ea4b51f5dbdaf2caa94f97a9d9ab2a5b`) :
 
 ```bash
-cd ~/Downloads/ai-for-safari && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.7/distribution/installer.sh
+cd "${TMPDIR:-/tmp}/ai-for-safari" && ditto -x -k ai-for-safari.zip . && shasum -a 256 ai-for-safari-1.7/distribution/installer.sh
 ```
 
 Si l'empreinte est la bonne et que la personne a dit oui, lance :
 
 ```bash
-cd ~/Downloads/ai-for-safari && bash ai-for-safari-1.7/distribution/installer.sh
+cd "${TMPDIR:-/tmp}/ai-for-safari" && bash ai-for-safari-1.7/distribution/installer.sh
 ```
 
 Le script vérifie les empreintes de chaque fichier, copie tout dans
 `~/Library/Application Support/AI for Safari`, compile le pont et l'app sur place, branche le connecteur
 `ai-for-safari` dans Claude Code, puis ouvre les deux apps.
+
+## Si une permission est refusée
+
+Ne cherche pas d'autre chemin pour faire la même chose. Dis à la personne, en une phrase, quelle demande a été
+refusée et pourquoi elle sert. Propose-lui deux choix :
+
+1. **Réessayer** en acceptant la demande cette fois (si c'est elle qui a refusé, ou si son outil lui permet de
+   l'autoriser).
+2. **Le faire elle-même dans le Terminal** (app Terminal du Mac, hors de ton outil) en collant cette commande unique.
+   Elle télécharge l'archive dans un dossier temporaire, **s'arrête si l'empreinte n'est pas la bonne**, puis lance
+   l'installeur :
+
+```bash
+mkdir -p "${TMPDIR:-/tmp}/ai-for-safari" && cd "${TMPDIR:-/tmp}/ai-for-safari" && curl -fL -o ai-for-safari.zip "https://github.com/Fripouilledu92/ai-for-safari/releases/download/v1.7/ai-for-safari-1.7.zip" && echo "0fcf52c863f47aec6134960f3577b4083fc70872511dafab41e2bfb65cf6fcdb  ai-for-safari.zip" | shasum -a 256 -c - && ditto -x -k ai-for-safari.zip . && bash ai-for-safari-1.7/distribution/installer.sh
+```
+
+Ensuite, reprends à l'étape 4.
 
 ## 4. Ce que la personne fait elle-même
 
